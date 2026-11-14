@@ -15,6 +15,8 @@
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;background:var(--ink);color:white;padding:11px 16px;border-radius:10px;box-shadow:0 10px 30px #0003;font-size:12px;transition:.22s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}.modal-wrap{position:fixed;inset:0;background:#0b1712a8;display:none;align-items:center;justify-content:center;padding:18px;z-index:15}.modal-wrap.show{display:flex}.modal{background:#fff;border-radius:17px;width:min(520px,100%);padding:22px;box-shadow:0 24px 80px #0003}.modal h2{font-size:18px;margin:0 0 8px}.modal p{font-size:12px;line-height:1.65;color:var(--muted)}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:1050px){.app{grid-template-columns:205px 1fr}.main{padding:0 23px 35px}.studio-layout{grid-template-columns:1fr}.library-grid,.lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1.3fr .7fr}}
 @media(max-width:720px){.app{display:block}.sidebar{position:sticky;z-index:10;top:0;height:auto;min-height:0;padding:8px 10px;display:block}.brand{padding:3px 6px 7px}.brand-mark{width:30px;height:30px;border-radius:9px}.brand-sub,.nav-label,.side-bottom{display:none}.nav{display:flex;overflow:auto;gap:5px;padding-bottom:2px}.nav button{white-space:nowrap;padding:8px 10px;font-size:11px}.nav button.active:before{display:none}.nav-icon{width:auto}.main{padding:0 14px 28px}.topbar{height:50px}.page{padding-top:22px}.page-head{align-items:flex-start;flex-direction:column}.page-head h1{font-size:25px}.hero{grid-template-columns:1fr;padding:22px}.hero h2{font-size:24px}.hero-visual{display:none}.stat-grid{gap:8px}.stat{padding:13px}.stat-num{font-size:24px}.grid-two{grid-template-columns:1fr}.library-grid,.lesson-grid{grid-template-columns:1fr}.field-grid{grid-template-columns:1fr 1fr}.library-toolbar{flex-wrap:wrap}.library-toolbar .search-input{max-width:none;flex:1 1 100%}.studio-layout{display:block}.preview-card{margin-top:14px}.top-actions .local-pill{display:none}}
+.fdm-checks{display:grid;grid-template-columns:1fr 1fr;gap:7px 11px;margin:2px 0 12px}.fdm-check{display:flex;align-items:flex-start;gap:7px;color:#52635b;font-size:10px;line-height:1.45}.fdm-check input{width:auto;margin:1px 0 0;accent-color:#78a63c}.fdm-advice{background:#f4f7ed;border:1px solid #e0e9d3;border-radius:10px;padding:10px 11px;color:#536848;font-size:10px;line-height:1.6;margin-top:3px}
+@media(max-width:720px){.fdm-checks{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -79,6 +81,26 @@
                 <div class="field"><label for="blendLength">每端球身到柱身的圓滑轉接長</label><input id="blendLength" type="number" step="0.01" min="0.5" value="1.2"></div>
               </div>
               <div class="field-hint">球身內側保留近乎完整的圓球曲面，只在接近內側極點處以短曲線順接柱身；兩端都不切平。</div>
+              <div class="divider"></div>
+              <div class="tiny-heading">FDM 列印與 Bambu Studio 建議</div>
+              <div class="field"><label for="printOrientation">列印擺放方向</label><select id="printOrientation"><option value="side">水平側放（降低重心，建議先試）</option><option value="tilt45">約 45° 斜放</option><option value="upright">直立（窄底，需留意晃動）</option></select></div>
+              <div class="field-grid">
+                <div class="field"><label for="supportMode">支撐型態</label><select id="supportMode"><option value="tree">Tree (auto)</option><option value="normal">Normal (auto)</option><option value="none">停用支撐</option></select></div>
+                <div class="field"><label for="supportThresholdAngle">支撐角度門檻</label><input id="supportThresholdAngle" type="number" min="0" max="89" step="1" value="30"></div>
+                <div class="field"><label for="supportTopZDistance">支撐頂部 Z 間距 · mm</label><input id="supportTopZDistance" type="number" min="0" step="0.01" value="0.2"></div>
+                <div class="field"><label for="supportInterfaceMode">支撐接觸材料</label><select id="supportInterfaceMode"><option value="same">與模型同材</option><option value="dedicated">專用支撐介面料</option></select></div>
+                <div class="field"><label for="bedAdhesion">底板附著方式</label><select id="bedAdhesion"><option value="brim">Brim</option><option value="raft">Raft</option><option value="none">不加</option></select></div>
+                <div class="field"><label for="brimWidth">Brim 寬度 · mm</label><input id="brimWidth" type="number" min="0" step="0.5" value="5"></div>
+                <div class="field"><label for="raftLayers">Raft 層數</label><input id="raftLayers" type="number" min="0" step="1" value="0"></div>
+                <div class="field"><label for="nozzleDiameter">噴嘴直徑 · mm</label><input id="nozzleDiameter" type="number" min="0.2" step="0.1" value="0.4"></div>
+                <div class="field"><label for="layerHeight">層高 · mm</label><input id="layerHeight" type="number" min="0.04" step="0.01" value="0.16"></div>
+              </div>
+              <div class="fdm-checks">
+                <label class="fdm-check"><input id="supportsOnBuildPlateOnly" type="checkbox"> 支撐只從底板長出</label>
+                <label class="fdm-check"><input id="slowSmallLayers" type="checkbox" checked> 小截面層減速／加強冷卻</label>
+              </div>
+              <div id="fdmAdvice" class="fdm-advice" aria-live="polite"></div>
+              <div class="field-hint" style="margin-top:8px">3MF 專案會帶入方向與支撐、Brim／Raft、層高等切片設定；STL 只含幾何。Bambu Studio 仍會依所選印表機與材料產生支撐，列印前請查看切片預覽。</div>
             </div>
             <div id="generalFields" hidden>
               <div class="tiny-heading">模型尺寸 · mm</div>
@@ -95,7 +117,7 @@
             <div class="tiny-heading">使用條件</div>
             <div class="field"><label for="purpose">用途 / 配合對象</label><textarea id="purpose" placeholder="要安裝在哪裡？接觸的零件尺寸、受力或移動方式是什麼？"></textarea></div>
             <div class="field-grid">
-              <div class="field"><label for="printer">印表機</label><input id="printer" placeholder="例如：A1 / P1S / X1C"></div>
+              <div class="field"><label for="printer">印表機</label><input id="printer" placeholder="例如：A1 mini / A1 / P1S / X1C"></div>
               <div class="field"><label for="material">材料</label><input id="material" placeholder="例如：PLA / PETG"></div>
             </div>
             <div class="field"><label for="stage">專案進度</label><select class="status-select" id="stage"><option>設計中</option><option>待確認尺寸</option><option>待切片</option><option>待試印</option><option>已列印，待檢查</option><option>已驗收</option></select></div>
@@ -108,7 +130,7 @@
             <div class="preview-card"><div class="preview-top"><span>模型輪廓示意</span><span id="previewType">沿 Z 軸直立</span></div><div class="preview-stage" id="previewStage"></div><div class="preview-caption" id="previewCaption">預覽僅用於理解外形比例，最終幾何以匯出的模型為準。</div></div>
             <div class="metrics"><div class="metric"><label>外形範圍</label><strong id="metricSize">26.94 mm</strong></div><div class="metric"><label>模型單位</label><strong>毫米 mm</strong></div><div class="metric"><label>方向建議</label><strong id="metricOrient">Z 軸直立</strong></div></div>
             <div class="panel code-panel"><div class="code-head"><h3>OpenSCAD 參數化來源</h3><span>可自行編輯 / 重建</span></div><textarea class="code-box" id="scadCode" readonly spellcheck="false" aria-label="OpenSCAD 程式碼"></textarea><div class="code-note" id="scadNote">球端連接柱可另匯出 STL。打開 Bambu Studio 後仍需確認尺度、擺放、材料與切片預覽。</div>
-              <div class="button-row"><button class="btn small primary" id="downloadStlBtn">下載 STL 給 Bambu Studio</button><button class="btn small secondary" id="downloadScadBtn">下載 OpenSCAD</button><button class="btn small secondary" id="copyPromptBtn">複製建模需求</button></div>
+              <div class="button-row"><button class="btn small primary" id="download3mfBtn">下載 Bambu Studio 3MF（含設定）</button><button class="btn small secondary" id="downloadStlBtn">下載 STL</button><button class="btn small secondary" id="downloadScadBtn">下載 OpenSCAD</button><button class="btn small secondary" id="copyPromptBtn">複製建模需求</button></div>
             </div>
           </div>
         </div>
@@ -229,14 +251,16 @@
   function getFormData() {
     const type=$("modelType").value;
     const common={name:$("projectName").value.trim()||"未命名模型",type,purpose:$("purpose").value.trim(),printer:$("printer").value.trim(),material:$("material").value.trim(),stage:$("stage").value};
-    if (type==="ball-connector") return Object.assign(common,{totalLength:+$("totalLength").value,upperBallDiameter:+$("upperBallDiameter").value,lowerBallDiameter:+$("lowerBallDiameter").value,linkedBallDiameters:diameterLinkIsOn(),shaftDiameter:+$("shaftDiameter").value,blendLength:+$("blendLength").value});
+    if (type==="ball-connector") return Object.assign(common,{totalLength:+$("totalLength").value,upperBallDiameter:+$("upperBallDiameter").value,lowerBallDiameter:+$("lowerBallDiameter").value,linkedBallDiameters:diameterLinkIsOn(),shaftDiameter:+$("shaftDiameter").value,blendLength:+$("blendLength").value,printOrientation:$("printOrientation").value,supportMode:$("supportMode").value,supportThresholdAngle:+$("supportThresholdAngle").value,supportsOnBuildPlateOnly:$("supportsOnBuildPlateOnly").checked,supportTopZDistance:+$("supportTopZDistance").value,supportInterfaceMode:$("supportInterfaceMode").value,bedAdhesion:$("bedAdhesion").value,brimWidth:+$("brimWidth").value,raftLayers:+$("raftLayers").value,nozzleDiameter:+$("nozzleDiameter").value,layerHeight:+$("layerHeight").value,slowSmallLayers:$("slowSmallLayers").checked});
     return Object.assign(common,{x:+$("dimX").value,y:+$("dimY").value,z:+$("dimZ").value,wall:+$("wallThickness").value,holeDiameter:+$("holeDiameter").value,innerDiameter:+$("innerDiameter").value});
   }
   function validData(d) {
     const diameters=ballDiameters(d);
-    const nums=d.type==="ball-connector"?[d.totalLength,diameters.upper,diameters.lower,d.shaftDiameter,d.blendLength]:[d.x,d.y,d.z,d.wall,d.holeDiameter,d.innerDiameter];
+    const nums=d.type==="ball-connector"?[d.totalLength,diameters.upper,diameters.lower,d.shaftDiameter,d.blendLength,d.nozzleDiameter,d.layerHeight]:[d.x,d.y,d.z,d.wall,d.holeDiameter,d.innerDiameter];
     if (nums.some(x=>!Number.isFinite(x)||x<=0)) { toast("請檢查尺寸，所有數值都必須大於 0。"); return false; }
     if (d.type==="ball-connector") {
+      const printNums=[d.supportThresholdAngle,d.supportTopZDistance,d.brimWidth,d.raftLayers];
+      if(printNums.some(x=>!Number.isFinite(x))||d.supportThresholdAngle<0||d.supportThresholdAngle>89||d.supportTopZDistance<0||d.brimWidth<0||d.raftLayers<0||!Number.isInteger(d.raftLayers)||d.layerHeight>d.nozzleDiameter||(d.bedAdhesion==="raft"&&d.raftLayers<1)||(d.bedAdhesion==="brim"&&d.brimWidth<=0)){toast("請檢查支撐、Brim、Raft 與層高參數；選用 Raft 至少需 1 層，選用 Brim 寬度需大於 0，層高不可大於噴嘴直徑。");return false;}
       const r0=d.shaftDiameter/2;
       const joinDepth=diameter=>{const R=diameter/2,rBlend=r0+(R-r0)*0.55;return R+Math.sqrt(Math.max(0,R*R-rBlend*rBlend))+d.blendLength;};
       if (d.shaftDiameter>=diameters.upper || d.shaftDiameter>=diameters.lower || d.totalLength<=joinDepth(diameters.upper)+joinDepth(diameters.lower)) {
@@ -275,7 +299,9 @@
     if(d.type==="ball-connector"){
       const dims=ballDiameters(d);
       const pts=ballProfile(d,48).map(p=>"  ["+p[0].toFixed(4)+", "+p[1].toFixed(4)+"]").join(",\n");
-      return "// PrintLab - 雙球端連接柱，單位 mm\n// 上球最大直徑 "+dims.upper+" / 下球最大直徑 "+dims.lower+" / 柱徑 "+d.shaftDiameter+" / 總長 "+d.totalLength+"\n// 兩端保留近乎完整的圓球曲面，不切平；內側短曲線順接柱身。\n$fn = 128;\nrotate_extrude(convexity = 10)\n  polygon(points = [\n"+pts+"\n  ]);\n";
+      const angle=d.printOrientation==="side"?90:d.printOrientation==="tilt45"?45:0;
+      const turn=angle?"min_z = min([for (p = [\n"+pts+"\n]) p[1] * cos("+angle+") - abs(p[0]) * sin("+angle+")]);\ntranslate([0, 0, -min_z])\n  rotate([0, "+angle+", 0])\n    ":"";
+      return "// PrintLab - 雙球端連接柱，單位 mm\n// 上球最大直徑 "+dims.upper+" / 下球最大直徑 "+dims.lower+" / 柱徑 "+d.shaftDiameter+" / 總長 "+d.totalLength+"\n// 兩端保留近乎完整的圓球曲面，不切平；內側短曲線順接柱身。\n// STL / SCAD 擺放方向："+orientationLabel(d)+"（支撐與 Brim 請在 Bambu Studio 設定）\n$fn = 128;\n"+turn+"rotate_extrude(convexity = 10)\n  polygon(points = [\n"+pts+"\n  ]);\n";
     }
     if(d.type==="open-box") return "// PrintLab - 開口收納盒，單位 mm\n$fn = 64;\ndifference() {\n  cube(["+d.x+", "+d.y+", "+d.z+"]);\n  translate(["+d.wall+", "+d.wall+", "+d.wall+"])\n    cube(["+(d.x-2*d.wall)+", "+(d.y-2*d.wall)+", "+(d.z-d.wall+0.02)+"]);\n}\n";
     if(d.type==="washer") return "// PrintLab - 圓形墊片 / 套環，單位 mm\n$fn = 96;\ndifference() {\n  cylinder(h = "+d.z+", d = "+d.x+");\n  translate([0,0,-0.1]) cylinder(h = "+(d.z+0.2)+", d = "+d.innerDiameter+");\n}\n";
@@ -300,6 +326,12 @@
         for(let i=0;i<seg;i++){const a=base1+i,b=base1+(i+1)%seg,c=base2+i,e=base2+(i+1)%seg;faces.push([a,b,c],[b,e,c]);}
       }
     }
+    if(d.printOrientation&&d.printOrientation!=="upright"){
+      const angle=d.printOrientation==="side"?Math.PI/2:Math.PI/4,cos=Math.cos(angle),sin=Math.sin(angle);
+      for(const v of vertices){const x=v[0],z=v[2];v[0]=x*cos+z*sin;v[2]=-x*sin+z*cos;}
+      const minZ=Math.min(...vertices.map(v=>v[2]));
+      for(const v of vertices)v[2]-=minZ;
+    }
     return {vertices,faces};
   }
   function stlBlob(d) {
@@ -317,6 +349,56 @@
       view.setUint16(offset,0,true);offset+=2;
     }
     return new Blob([buffer],{type:"model/stl"});
+  }
+  function zipStored(entries){
+    const encoder=new TextEncoder(),files=[],central=[];
+    const crcTable=new Uint32Array(256);
+    for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;crcTable[n]=c>>>0;}
+    const crc32=bytes=>{let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0;};
+    const write16=(view,offset,value)=>view.setUint16(offset,value,true),write32=(view,offset,value)=>view.setUint32(offset,value>>>0,true);
+    let offset=0;
+    for(const entry of entries){
+      const name=encoder.encode(entry.name),data=typeof entry.data==="string"?encoder.encode(entry.data):entry.data,crc=crc32(data),local=new Uint8Array(30+name.length),lv=new DataView(local.buffer);
+      write32(lv,0,0x04034b50);write16(lv,4,20);write16(lv,6,0x0800);write16(lv,8,0);write16(lv,10,0);write16(lv,12,33);write32(lv,14,crc);write32(lv,18,data.length);write32(lv,22,data.length);write16(lv,26,name.length);write16(lv,28,0);local.set(name,30);
+      files.push(local,data);
+      const record=new Uint8Array(46+name.length),cv=new DataView(record.buffer);
+      write32(cv,0,0x02014b50);write16(cv,4,20);write16(cv,6,20);write16(cv,8,0x0800);write16(cv,10,0);write16(cv,12,0);write16(cv,14,33);write32(cv,16,crc);write32(cv,20,data.length);write32(cv,24,data.length);write16(cv,28,name.length);write16(cv,30,0);write16(cv,32,0);write16(cv,34,0);write16(cv,36,0);write32(cv,38,0);write32(cv,42,offset);record.set(name,46);central.push(record);offset+=local.length+data.length;
+    }
+    const centralSize=central.reduce((sum,x)=>sum+x.length,0),end=new Uint8Array(22),ev=new DataView(end.buffer);
+    write32(ev,0,0x06054b50);write16(ev,4,0);write16(ev,6,0);write16(ev,8,entries.length);write16(ev,10,entries.length);write32(ev,12,centralSize);write32(ev,16,offset);write16(ev,20,0);
+    return new Blob([...files,...central,end],{type:"model/3mf"});
+  }
+  function bambuMaterial(d){
+    const value=(d.material||"").toUpperCase();
+    const type=value.includes("PETG")?"PETG":value.includes("ASA")?"ASA":value.includes("ABS")?"ABS":value.includes("TPU")?"TPU":"PLA";
+    const profile=value.startsWith("GENERIC ")||value.startsWith("BAMBU ")?d.material.trim():"Generic "+type;
+    return {type,profile};
+  }
+  function bambuProjectSettings(d){
+    const mat=bambuMaterial(d),dedicated=d.supportInterfaceMode==="dedicated";
+    const printer=(d.printer||"").trim(),printerBase=printer.replace(/\s+\d+(?:\.\d+)?\s*mm?\s*nozzle$/i,"").replace(/\s+\d+(?:\.\d+)?\s*nozzle$/i,"").trim(),printerModel=printerBase?(printerBase.toLowerCase().includes("bambu")?printerBase:"Bambu Lab "+printerBase):"",printerId=printerModel?printerModel+" "+d.nozzleDiameter+" nozzle":"";
+    return {
+      name:"project_settings",printer_settings_id:printerId,printer_model:printerModel,printer_variant:String(d.nozzleDiameter),printer_technology:"FFF",print_settings_id:"PrintLab FDM 建議",
+      filament_settings_id:dedicated?[mat.profile,"Generic Support for "+mat.type]:[mat.profile],filament_type:dedicated?[mat.type,"Support"]:[mat.type],filament_diameter:dedicated?["1.75","1.75"]:["1.75"],filament_colour:dedicated?["#FFFFFF","#FFFFFF"]:["#FFFFFF"],filament_flow_ratio:dedicated?["1","1"]:["1"],default_filament_profile:mat.profile,default_filament_colour:["#FFFFFF"],nozzle_diameter:[String(d.nozzleDiameter)],layer_height:String(d.layerHeight),printable_height:"256",
+      enable_support:d.supportMode==="none"?"0":"1",support_type:d.supportMode==="normal"?"normal(auto)":"tree(auto)",support_threshold_angle:String(d.supportThresholdAngle),support_on_build_plate_only:d.supportsOnBuildPlateOnly?"1":"0",support_top_z_distance:String(d.supportTopZDistance),support_interface_filament:dedicated?"2":"0",
+      brim_type:d.bedAdhesion==="brim"?"outer_only":"no_brim",brim_width:String(d.brimWidth),brim_object_gap:"0.1",raft_layers:d.bedAdhesion==="raft"?String(d.raftLayers):"0",slow_down_for_layer_cooling:d.slowSmallLayers?"1":"0"
+    };
+  }
+  function bambuProject3mfBlob(d){
+    const mesh=triangleMesh(d,64),modelName=escapeHtml(d.name||"PrintLab Model"),vertices=mesh.vertices.map(v=>'<vertex x="'+v[0].toFixed(4)+'" y="'+v[1].toFixed(4)+'" z="'+v[2].toFixed(4)+'"/>').join(""),triangles=mesh.faces.map(f=>'<triangle v1="'+f[0]+'" v2="'+f[1]+'" v3="'+f[2]+'"/>').join("");
+    const modelXml='<?xml version="1.0" encoding="UTF-8"?><model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:BambuStudio="http://schemas.bambulab.com/package/2021"><metadata name="Application">BambuStudio-02.03.01.00</metadata><metadata name="BambuStudio:3mfVersion">1</metadata><metadata name="Title">'+modelName+'</metadata><resources><object id="1" name="'+modelName+'" type="model"><mesh><vertices>'+vertices+'</vertices><triangles>'+triangles+'</triangles></mesh></object></resources><build><item objectid="1" transform="1 0 0 0 1 0 0 0 1 0 0 0"/></build></model>';
+    const modelSettings='<?xml version="1.0" encoding="UTF-8"?><config><object id="1"><metadata key="name" value="'+modelName+'"/><metadata key="extruder" value="1"/><part id="1" subtype="normal_part"><metadata key="name" value="'+modelName+'"/><metadata key="extruder" value="1"/></part></object><plate><metadata key="plater_id" value="1"/><metadata key="name" value="Plate 1"/></plate></config>';
+    const rels='<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel" Target="/3D/3dmodel.model" Id="rel0"/></Relationships>';
+    const contentTypes='<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="config" ContentType="application/xml"/></Types>';
+    const modelRels='<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>';
+    return zipStored([
+      {name:"3D/3dmodel.model",data:modelXml},
+      {name:"[Content_Types].xml",data:contentTypes},
+      {name:"_rels/.rels",data:rels},
+      {name:"Metadata/project_settings.config",data:JSON.stringify(bambuProjectSettings(d),null,2)},
+      {name:"Metadata/model_settings.config",data:modelSettings},
+      {name:"Metadata/_rels/model_settings.config.rels",data:modelRels}
+    ]);
   }
   function profileSvg(d) {
     const dims=ballDiameters(d),P=ballProfile(d,54), maxR=Math.max(dims.upper,dims.lower)/2, padY=23, availH=194, scale=availH/d.totalLength;
@@ -340,12 +422,15 @@
     $("scadCode").value=makeScad(d);
     if(d.type==="ball-connector"){
       $("previewStage").innerHTML=profileSvg(d);
-      $("previewType").textContent="沿 Z 軸直立";
+      $("previewType").textContent="尺寸側視 · STL / 3MF「"+orientationLabel(d)+"」";
       $("metricSize").textContent=fmt(d.totalLength)+" mm";
-      $("metricOrient").textContent="Z 軸直立";
-      $("scadNote").textContent="端部不切平；球身內側保留近乎完整的球面，於內側極點附近以短相切曲線接到柱身。STL 使用毫米座標，可匯入 Bambu Studio；請以切片預覽確認支撐需求。";
+      $("metricOrient").textContent=orientationLabel(d);
+      $("scadNote").textContent="端部不切平；球身內側保留近乎完整的球面，於內側極點附近以短相切曲線接到柱身。3MF 會依擺放方向貼齊底板，並帶入目前支撐、Brim／Raft、層高設定；支撐由 Bambu Studio 切片生成。";
       $("downloadStlBtn").disabled=false;
       $("downloadStlBtn").style.opacity="1";
+      $("download3mfBtn").disabled=false;
+      $("download3mfBtn").style.opacity="1";
+      updateFdmAdvice(d);
     } else {
       $("previewStage").innerHTML=genericSvg(d);
       $("previewType").textContent="幾何比例示意";
@@ -354,7 +439,22 @@
       $("scadNote").textContent="此模板目前輸出 OpenSCAD 來源。使用 OpenSCAD 按 F6 產生幾何，再匯出 STL / 3MF；匯入 Bambu Studio 後重查尺寸與切片。";
       $("downloadStlBtn").disabled=true;
       $("downloadStlBtn").style.opacity=".5";
+      $("download3mfBtn").disabled=true;
+      $("download3mfBtn").style.opacity=".5";
     }
+  }
+  function orientationLabel(d){return d.printOrientation==="side"?"水平側放":d.printOrientation==="tilt45"?"約 45° 斜放":"直立";}
+  function updateFdmAdvice(d){
+    let msg=d.printOrientation==="upright"
+      ?"直立時底部接觸面窄、重心較高，較容易晃動或失去附著；可先試側放，或保留直立並加 Brim、降低速度及加強小層冷卻。"
+      :d.printOrientation==="tilt45"
+        ?"斜放可作穩定性與接觸面的折衷；請在切片預覽確認球面下側有足夠支撐，並檢查支撐接觸痕。"
+        :"側放可降低細長件直立時的晃動風險；球面下側仍可能需要支撐，請在切片預覽確認接觸與移除方式。";
+    if(d.supportMode==="none")msg+=" 目前停用支撐，請特別檢查懸垂區是否能逐層成形。";
+    else msg+=" 建議先用 "+(d.supportMode==="tree"?"Tree":"Normal")+" 支撐、角度門檻 "+d.supportThresholdAngle+"° 試切，再依預覽減少不必要接觸。";
+    msg+=d.bedAdhesion==="none"?" 球端是圓面，接觸床面的面積有限；目前未加 Brim / Raft，可先試 5 mm Brim。":" 底板附著目前為 "+adhesionLabel(d)+"。";
+    msg+=" 支撐、冷卻、速度與底板附著都可能影響結果；若仍有皺層，也要檢查線材乾燥、流量與噴嘴碰撞。";
+    $("fdmAdvice").textContent=msg;
   }
   function setForm(d) {
     $("projectName").value=d.name||"";
@@ -368,6 +468,18 @@
       const upper=d.upperBallDiameter==null?legacy:d.upperBallDiameter;
       const lower=d.lowerBallDiameter==null?legacy:d.lowerBallDiameter;
       $("totalLength").value=d.totalLength||26.94; $("upperBallDiameter").value=upper; $("lowerBallDiameter").value=lower; $("shaftDiameter").value=d.shaftDiameter||4.9; $("blendLength").value=d.blendLength||1.2;
+      $("printOrientation").value=d.printOrientation||"side";
+      $("supportMode").value=d.supportMode||"tree";
+      $("supportThresholdAngle").value=d.supportThresholdAngle==null?30:d.supportThresholdAngle;
+      $("supportsOnBuildPlateOnly").checked=!!d.supportsOnBuildPlateOnly;
+      $("supportTopZDistance").value=d.supportTopZDistance==null?0.2:d.supportTopZDistance;
+      $("supportInterfaceMode").value=d.supportInterfaceMode||"same";
+      $("bedAdhesion").value=d.bedAdhesion||"brim";
+      $("brimWidth").value=d.brimWidth==null?5:d.brimWidth;
+      $("raftLayers").value=d.raftLayers==null?0:d.raftLayers;
+      $("nozzleDiameter").value=d.nozzleDiameter==null?0.4:d.nozzleDiameter;
+      $("layerHeight").value=d.layerHeight==null?0.16:d.layerHeight;
+      $("slowSmallLayers").checked=d.slowSmallLayers==null?true:!!d.slowSmallLayers;
       const linked=typeof d.linkedBallDiameters==="boolean"?d.linkedBallDiameters:Number(upper)===Number(lower);
       setDiameterLinkState(linked,linked);
     } else {
@@ -377,6 +489,8 @@
     $("generalFields").hidden=d.type==="ball-connector";
     updatePreview();
   }
+  function supportLabel(mode){return mode==="tree"?"Tree 自動":mode==="normal"?"一般自動":"停用";}
+  function adhesionLabel(d){return d.bedAdhesion==="raft"?"Raft（"+d.raftLayers+" 層）":d.bedAdhesion==="brim"?"Brim（"+d.brimWidth+" mm）":"不加 Brim / Raft";}
   function makePrompt(d) {
     const dimensions="外形 "+d.x+" × "+d.y+" × "+d.z+" mm；壁 / 底厚 "+d.wall+" mm；孔徑 "+d.holeDiameter+" mm。";
     if(d.type==="ball-connector") {
@@ -386,6 +500,7 @@
         "模型："+d.name,
         "用途："+(d.purpose||"待補"),
         "尺寸：總長 "+d.totalLength+" mm；上球最大直徑 "+dims.upper+" mm、下球最大直徑 "+dims.lower+" mm；中間柱直徑 "+d.shaftDiameter+" mm；球面延伸至接近完整球體，再以每端 "+d.blendLength+" mm 短相切曲線順接柱身；兩端不切平。",
+        "FDM 起始建議：擺放「"+orientationLabel(d)+"」；支撐 "+supportLabel(d.supportMode)+"、角度門檻 "+d.supportThresholdAngle+"°、僅底板支撐 "+(d.supportsOnBuildPlateOnly?"是":"否")+"、支撐頂部 Z 間距 "+d.supportTopZDistance+" mm、介面料 "+(d.supportInterfaceMode==="dedicated"?"專用":"同材")+"；底板附著 "+adhesionLabel(d)+"。噴嘴 "+d.nozzleDiameter+" mm、層高 "+d.layerHeight+" mm、小層降速 / 加強冷卻 "+(d.slowSmallLayers?"開":"關")+"。此為切片建議，並不會寫入 STL。",
         "印表機："+(d.printer||"待確認"),
         "材料："+(d.material||"待確認"),
         "請先指出缺少的實測尺寸與假設，保留可編輯 CAD 來源，檢查壁厚、配合公差、裝配方向、承力與支撐；輸出 STL / 3MF 前列出需要在 Bambu Studio 核對的項目。"
@@ -439,7 +554,7 @@
     activeId=record.id; await writeProject(record); projects=await readProjects(); renderDashboard(); renderLibrary(); updateAttachments(); toast("模型專案已儲存，版本 v"+record.revision+"。");
   }
   async function openProject(id) { const p=projects.find(x=>x.id===id); if(!p)return; activeId=id; setForm(p); updateAttachments(); showPage("studio"); toast("已開啟 "+p.name+"。"); }
-  function newProject() { activeId=null; setForm({name:"新模型",type:"ball-connector",totalLength:26.94,upperBallDiameter:8.8,lowerBallDiameter:8.8,linkedBallDiameters:true,shaftDiameter:4.9,blendLength:1.2,stage:"設計中"}); updateAttachments(); showPage("studio"); $("projectName").focus(); }
+  function newProject() { activeId=null; setForm({name:"新模型",type:"ball-connector",totalLength:26.94,upperBallDiameter:8.8,lowerBallDiameter:8.8,linkedBallDiameters:true,shaftDiameter:4.9,blendLength:1.2,printOrientation:"side",supportMode:"tree",supportThresholdAngle:30,supportsOnBuildPlateOnly:false,supportTopZDistance:0.2,supportInterfaceMode:"same",bedAdhesion:"brim",brimWidth:5,raftLayers:0,nozzleDiameter:0.4,layerHeight:0.16,slowSmallLayers:true,stage:"設計中"}); updateAttachments(); showPage("studio"); $("projectName").focus(); }
   async function confirmDelete(id) {
     const p=projects.find(x=>x.id===id);if(!p)return;
     if(!window.confirm("刪除「"+p.name+"」及其附件？此操作無法復原。"))return;
@@ -459,7 +574,7 @@
     const content=[
       "# "+d.name,"","## 規格","","- 模型模板："+d.type,"- 單位：mm","- 尺寸："+dimensions,
       "- 用途："+(d.purpose||"待補"),"- 印表機："+(d.printer||"待確認"),"- 材料："+(d.material||"待確認"),"- 進度："+d.stage,
-      "","## 列印前確認","","- 在 Bambu Studio 核對機型、噴嘴、材料與列印板。","- 確認尺寸、方向、支撐、首層與切片預覽。","- 配合尺寸與強度以實物試片確認。",""
+      "","## FDM / Bambu Studio 起始設定","",...(d.type==="ball-connector"?["- 擺放方向："+orientationLabel(d),"- 支撐："+supportLabel(d.supportMode)+"；角度門檻 "+d.supportThresholdAngle+"°；僅底板支撐 "+(d.supportsOnBuildPlateOnly?"開":"關"),"- 支撐頂部 Z 間距："+d.supportTopZDistance+" mm；接觸材料："+(d.supportInterfaceMode==="dedicated"?"專用介面料":"同材"),"- 底板附著："+adhesionLabel(d),"- 噴嘴 / 層高："+d.nozzleDiameter+" / "+d.layerHeight+" mm；小層降速 / 加強冷卻："+(d.slowSmallLayers?"開":"關")]:[]),"- 3MF 專案會附上模型與目前的切片參數；STL 只包含幾何，支撐會由 Bambu Studio 切片產生。","","## 列印前確認","","- 在 Bambu Studio 核對機型、噴嘴、材料與列印板。","- 確認尺寸、方向、支撐、首層與切片預覽。","- 配合尺寸與強度以實物試片確認。",""
     ].join("\n");
     download(safeFilename(d.name)+"_規格.md",new Blob([content],{type:"text/markdown;charset=utf-8"}));
   }
@@ -501,13 +616,15 @@
     document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
     $("newProjectBtn").onclick=newProject;$("newBlankBtn").onclick=newProject;$("libraryNew").onclick=newProject;$("heroStudio").onclick=()=>showPage("studio");$("heroLibrary").onclick=()=>showPage("library");$("allModels").onclick=()=>showPage("library");
     $("saveProjectBtn").onclick=saveCurrent;$("specBtn").onclick=exportSpec;$("downloadScadBtn").onclick=()=>{const d=getFormData();download(safeFilename(d.name)+".scad",new Blob([makeScad(d)],{type:"text/plain;charset=utf-8"}));};
+    $("download3mfBtn").onclick=()=>{const d=getFormData();if(d.type!=="ball-connector"||!validData(d))return;download(safeFilename(d.name)+".3mf",bambuProject3mfBlob(d));toast(d.printer?"Bambu Studio 3MF 專案已下載，含目前模型方向與切片設定；開啟後請確認機型、材料及支撐預覽。":"Bambu Studio 3MF 專案已下載，含目前切片設定；印表機欄尚未填寫，開啟後請在 Bambu Studio 選擇機型並確認支撐預覽。");};
     $("downloadStlBtn").onclick=()=>{const d=getFormData();if(d.type!=="ball-connector"||!validData(d))return;download(safeFilename(d.name)+".stl",stlBlob(d));toast("STL 已產生；匯入 Bambu Studio 後請核對尺寸與切片。");};
     $("copyPromptBtn").onclick=async()=>{try{await navigator.clipboard.writeText(makePrompt(getFormData()));toast("建模需求已複製。");}catch(_){$("scadCode").focus();toast("瀏覽器未提供剪貼簿權限，請直接複製需求規格。");}};
     $("diameterLinkBtn").onclick=()=>{const link=!diameterLinkIsOn();setDiameterLinkState(link,link);updatePreview();};
     $("upperBallDiameter").addEventListener("input",()=>{if(diameterLinkIsOn())$("lowerBallDiameter").value=$("upperBallDiameter").value;updatePreview();});
     $("lowerBallDiameter").addEventListener("input",()=>{if(diameterLinkIsOn())$("upperBallDiameter").value=$("lowerBallDiameter").value;updatePreview();});
     $("modelType").onchange=()=>{const ball=$("modelType").value==="ball-connector";$("ballFields").hidden=!ball;$("generalFields").hidden=ball;updateAttachments();updatePreview();};
-    ["projectName","totalLength","shaftDiameter","blendLength","dimX","dimY","dimZ","wallThickness","holeDiameter","innerDiameter","purpose","printer","material","stage"].forEach(id=>$(id).addEventListener("input",updatePreview));
+    ["projectName","totalLength","shaftDiameter","blendLength","dimX","dimY","dimZ","wallThickness","holeDiameter","innerDiameter","purpose","printer","material","stage","printOrientation","supportMode","supportThresholdAngle","supportsOnBuildPlateOnly","supportTopZDistance","supportInterfaceMode","bedAdhesion","brimWidth","raftLayers","nozzleDiameter","layerHeight","slowSmallLayers"].forEach(id=>$(id).addEventListener("input",updatePreview));
+    ["supportsOnBuildPlateOnly","slowSmallLayers"].forEach(id=>$(id).addEventListener("change",updatePreview));
     $("attachInput").onchange=e=>addAttachments(Array.from(e.target.files||[]));
     $("searchModels").oninput=renderLibrary;$("filterStage").onchange=renderLibrary;$("exportData").onclick=exportWorkspace;$("importData").onchange=e=>{if(e.target.files&&e.target.files[0])importWorkspace(e.target.files[0]);};
     $("aboutBtn").onclick=$("helpBtn").onclick=()=> $("aboutModal").classList.add("show");$("closeAbout").onclick=()=> $("aboutModal").classList.remove("show");$("aboutModal").onclick=e=>{if(e.target===$("aboutModal"))$("aboutModal").classList.remove("show");};
@@ -519,7 +636,7 @@
     catch (_) { fallbackMode=true; }
     projects=await readProjects();
     if(!projects.length){
-      const seed={id:uid(),name:"雙球端連接柱",type:"ball-connector",totalLength:26.94,upperBallDiameter:8.8,lowerBallDiameter:8.8,linkedBallDiameters:true,shaftDiameter:4.9,blendLength:1.2,purpose:"上下端球徑預設連動為 8.8 mm，可解鎖分別設定；中間柱直徑 4.9 mm，總長 26.94 mm。端面不切平，球身內側保留近乎完整圓球曲面，再以短曲線順接柱身。",printer:"",material:"",stage:"設計中",revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),attachments:[]};
+      const seed={id:uid(),name:"雙球端連接柱",type:"ball-connector",totalLength:26.94,upperBallDiameter:8.8,lowerBallDiameter:8.8,linkedBallDiameters:true,shaftDiameter:4.9,blendLength:1.2,printOrientation:"side",supportMode:"tree",supportThresholdAngle:30,supportsOnBuildPlateOnly:false,supportTopZDistance:0.2,supportInterfaceMode:"same",bedAdhesion:"brim",brimWidth:5,raftLayers:0,nozzleDiameter:0.4,layerHeight:0.16,slowSmallLayers:true,purpose:"上下端球徑預設連動為 8.8 mm，可解鎖分別設定；中間柱直徑 4.9 mm，總長 26.94 mm。端面不切平，球身內側保留近乎完整圓球曲面，再以短曲線順接柱身。",printer:"",material:"",stage:"設計中",revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),attachments:[]};
       seed.scad=makeScad(seed);await writeProject(seed);projects=await readProjects();
     }
     setup();renderDashboard();renderLibrary();
