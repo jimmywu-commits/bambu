@@ -71,9 +71,9 @@
                 <div class="field"><label for="totalLength">總長</label><input id="totalLength" type="number" step="0.01" min="1" value="26.94"></div>
                 <div class="field"><label for="ballDiameter">端部最大直徑</label><input id="ballDiameter" type="number" step="0.01" min="1" value="8.8"></div>
                 <div class="field"><label for="shaftDiameter">中間柱直徑</label><input id="shaftDiameter" type="number" step="0.01" min="0.8" value="4.9"></div>
-                <div class="field"><label for="blendLength">每端平滑過渡長</label><input id="blendLength" type="number" step="0.01" min="0.5" value="4.4"></div>
+                <div class="field"><label for="blendLength">每端球身到柱身的圓滑轉接長</label><input id="blendLength" type="number" step="0.01" min="0.5" value="1.2"></div>
               </div>
-              <div class="field-hint">兩端保留圓弧球狀端頭，不切平端面；內側以平滑曲線漸縮至柱身。總長包含兩端端頭與過渡段。</div>
+              <div class="field-hint">球身內側保留近乎完整的圓球曲面，只在接近內側極點處以短曲線順接柱身；兩端都不切平。</div>
             </div>
             <div id="generalFields" hidden>
               <div class="tiny-heading">模型尺寸 · mm</div>
@@ -212,8 +212,12 @@
   function validData(d) {
     const nums=d.type==="ball-connector"?[d.totalLength,d.ballDiameter,d.shaftDiameter,d.blendLength]:[d.x,d.y,d.z,d.wall,d.holeDiameter,d.innerDiameter];
     if (nums.some(x=>!Number.isFinite(x)||x<=0)) { toast("請檢查尺寸，所有數值都必須大於 0。"); return false; }
-    if (d.type==="ball-connector" && (d.shaftDiameter>=d.ballDiameter || d.totalLength<=2*(d.ballDiameter/2+d.blendLength))) {
-      toast("柱徑須小於端部直徑，且總長要留出中央直柱。"); return false;
+    if (d.type==="ball-connector") {
+      const R=d.ballDiameter/2, r0=d.shaftDiameter/2, rBlend=r0+(R-r0)*0.55;
+      const joinDepth=R+Math.sqrt(Math.max(0,R*R-rBlend*rBlend))+d.blendLength;
+      if (d.shaftDiameter>=d.ballDiameter || d.totalLength<=2*joinDepth) {
+        toast("柱徑須小於端部直徑，且總長要留出中央直柱。"); return false;
+      }
     }
     if (d.type==="open-box" && (d.wall*2>=d.x || d.wall*2>=d.y || d.wall>=d.z)) { toast("盒子壁厚過大，請縮小壁厚或放大外形。"); return false; }
     if (d.type==="washer" && d.innerDiameter>=Math.min(d.x,d.y)) { toast("墊片內徑必須小於外徑。"); return false; }
@@ -221,22 +225,33 @@
   }
   function ballProfile(d, steps) {
     const R=d.ballDiameter/2, r0=d.shaftDiameter/2, T=d.blendLength, H=d.totalLength;
-    const profile=[];
+    const profile=[], sphereHalf=[];
     const add=(r,z)=>profile.push([Math.max(0,r),z]);
     const n=steps||36;
+    const rBlend=r0+(R-r0)*0.55;
+    const zSphereEnd=R+Math.sqrt(Math.max(0,R*R-rBlend*rBlend));
+    const zJoin=zSphereEnd+T;
     add(0,0);
     for(let i=1;i<=n;i++){const z=R*i/n; add(Math.sqrt(Math.max(0,R*R-(z-R)*(z-R))),z);}
-    for(let i=1;i<=n;i++){const t=i/n; add(r0+(R-r0)*(1+Math.cos(Math.PI*t))/2,R+T*t);}
-    const z2=H-R-T;
+    for(let i=1;i<=n;i++){const z=R+(zSphereEnd-R)*i/n; add(Math.sqrt(Math.max(0,R*R-(z-R)*(z-R))),z);}
+    sphereHalf.push(...profile);
+    const startSlope=-(zSphereEnd-R)/rBlend;
+    const blendR=t=>{
+      const t2=t*t,t3=t2*t;
+      const h00=2*t3-3*t2+1,h10=t3-2*t2+t,h01=-2*t3+3*t2;
+      return h00*rBlend+h10*(startSlope*T)+h01*r0;
+    };
+    for(let i=1;i<=n;i++){const t=i/n; add(blendR(t),zSphereEnd+T*t);}
+    const z2=H-zJoin;
     add(r0,z2);
-    for(let i=1;i<=n;i++){const t=i/n; add(r0+(R-r0)*(1-Math.cos(Math.PI*t))/2,z2+T*t);}
-    for(let i=1;i<=n;i++){const z=z2+T+R*i/n; add(Math.sqrt(Math.max(0,R*R-(z-(H-R))*(z-(H-R)))),z);}
+    for(let i=n-1;i>=0;i--){const t=i/n; add(blendR(t),H-(zSphereEnd+T*t));}
+    for(let i=sphereHalf.length-2;i>=0;i--){const [r,z]=sphereHalf[i]; add(r,H-z);}
     return profile;
   }
   function makeScad(d) {
     if(d.type==="ball-connector"){
       const pts=ballProfile(d,48).map(p=>"  ["+p[0].toFixed(4)+", "+p[1].toFixed(4)+"]").join(",\n");
-      return "// PrintLab - 雙球端連接柱，單位 mm\n// 最大端部直徑 "+d.ballDiameter+" / 柱徑 "+d.shaftDiameter+" / 總長 "+d.totalLength+"\n// 球狀端頭不切平；端部以相切曲線漸縮至柱身。\n$fn = 128;\nrotate_extrude(convexity = 10)\n  polygon(points = [\n"+pts+"\n  ]);\n";
+      return "// PrintLab - 雙球端連接柱，單位 mm\n// 最大端部直徑 "+d.ballDiameter+" / 柱徑 "+d.shaftDiameter+" / 總長 "+d.totalLength+"\n// 兩端保留近乎完整的圓球曲面，不切平；內側短曲線順接柱身。\n$fn = 128;\nrotate_extrude(convexity = 10)\n  polygon(points = [\n"+pts+"\n  ]);\n";
     }
     if(d.type==="open-box") return "// PrintLab - 開口收納盒，單位 mm\n$fn = 64;\ndifference() {\n  cube(["+d.x+", "+d.y+", "+d.z+"]);\n  translate(["+d.wall+", "+d.wall+", "+d.wall+"])\n    cube(["+(d.x-2*d.wall)+", "+(d.y-2*d.wall)+", "+(d.z-d.wall+0.02)+"]);\n}\n";
     if(d.type==="washer") return "// PrintLab - 圓形墊片 / 套環，單位 mm\n$fn = 96;\ndifference() {\n  cylinder(h = "+d.z+", d = "+d.x+");\n  translate([0,0,-0.1]) cylinder(h = "+(d.z+0.2)+", d = "+d.innerDiameter+");\n}\n";
@@ -302,7 +317,7 @@
       $("previewType").textContent="沿 Z 軸直立";
       $("metricSize").textContent=fmt(d.totalLength)+" mm";
       $("metricOrient").textContent="Z 軸直立";
-      $("scadNote").textContent="端部保留圓弧尖端，不切平；球狀端頭以平滑漸縮頸部連接柱身。STL 使用毫米座標，可匯入 Bambu Studio；支撐需求仍請以切片預覽確認。";
+      $("scadNote").textContent="端部不切平；球身內側保留近乎完整的球面，於內側極點附近以短相切曲線接到柱身。STL 使用毫米座標，可匯入 Bambu Studio；請以切片預覽確認支撐需求。";
       $("downloadStlBtn").disabled=false;
       $("downloadStlBtn").style.opacity="1";
     } else {
@@ -323,7 +338,7 @@
     $("material").value=d.material||"";
     $("stage").value=d.stage||"設計中";
     if(d.type==="ball-connector"){
-      $("totalLength").value=d.totalLength||26.94; $("ballDiameter").value=d.ballDiameter||8.8; $("shaftDiameter").value=d.shaftDiameter||4.9; $("blendLength").value=d.blendLength||4.4;
+      $("totalLength").value=d.totalLength||26.94; $("ballDiameter").value=d.ballDiameter||8.8; $("shaftDiameter").value=d.shaftDiameter||4.9; $("blendLength").value=d.blendLength||1.2;
     } else {
       $("dimX").value=d.x||40; $("dimY").value=d.y||30; $("dimZ").value=d.z||20; $("wallThickness").value=d.wall||2; $("holeDiameter").value=d.holeDiameter||3.2; $("innerDiameter").value=d.innerDiameter||4;
     }
@@ -338,7 +353,7 @@
         "請依 PrintLab 設計流程協助建立可列印模型。",
         "模型："+d.name,
         "用途："+(d.purpose||"待補"),
-        "尺寸：總長 "+d.totalLength+" mm；兩端最大直徑 "+d.ballDiameter+" mm；中間柱直徑 "+d.shaftDiameter+" mm；兩端各有 "+d.blendLength+" mm 平滑過渡；端面保留圓弧尖端、不切平。",
+        "尺寸：總長 "+d.totalLength+" mm；兩端最大直徑 "+d.ballDiameter+" mm；中間柱直徑 "+d.shaftDiameter+" mm；球面延伸至接近完整球體，再以每端 "+d.blendLength+" mm 短相切曲線順接柱身；兩端不切平。",
         "印表機："+(d.printer||"待確認"),
         "材料："+(d.material||"待確認"),
         "請先指出缺少的實測尺寸與假設，保留可編輯 CAD 來源，檢查壁厚、配合公差、裝配方向、承力與支撐；輸出 STL / 3MF 前列出需要在 Bambu Studio 核對的項目。"
@@ -392,7 +407,7 @@
     activeId=record.id; await writeProject(record); projects=await readProjects(); renderDashboard(); renderLibrary(); updateAttachments(); toast("模型專案已儲存，版本 v"+record.revision+"。");
   }
   async function openProject(id) { const p=projects.find(x=>x.id===id); if(!p)return; activeId=id; setForm(p); updateAttachments(); showPage("studio"); toast("已開啟 "+p.name+"。"); }
-  function newProject() { activeId=null; setForm({name:"新模型",type:"ball-connector",totalLength:26.94,ballDiameter:8.8,shaftDiameter:4.9,blendLength:4.4,stage:"設計中"}); updateAttachments(); showPage("studio"); $("projectName").focus(); }
+  function newProject() { activeId=null; setForm({name:"新模型",type:"ball-connector",totalLength:26.94,ballDiameter:8.8,shaftDiameter:4.9,blendLength:1.2,stage:"設計中"}); updateAttachments(); showPage("studio"); $("projectName").focus(); }
   async function confirmDelete(id) {
     const p=projects.find(x=>x.id===id);if(!p)return;
     if(!window.confirm("刪除「"+p.name+"」及其附件？此操作無法復原。"))return;
@@ -468,7 +483,7 @@
     catch (_) { fallbackMode=true; }
     projects=await readProjects();
     if(!projects.length){
-      const seed={id:uid(),name:"雙球端連接柱",type:"ball-connector",totalLength:26.94,ballDiameter:8.8,shaftDiameter:4.9,blendLength:4.4,purpose:"上下端部最大直徑 8.8 mm，中間柱直徑 4.9 mm，總長 26.94 mm；端面保留圓弧尖端不切平，球與柱身以平滑曲線連接。",printer:"",material:"",stage:"設計中",revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),attachments:[]};
+      const seed={id:uid(),name:"雙球端連接柱",type:"ball-connector",totalLength:26.94,ballDiameter:8.8,shaftDiameter:4.9,blendLength:1.2,purpose:"上下端部最大直徑 8.8 mm，中間柱直徑 4.9 mm，總長 26.94 mm；端面不切平，球身內側保留近乎完整圓球曲面，再以短曲線順接柱身。",printer:"",material:"",stage:"設計中",revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),attachments:[]};
       seed.scad=makeScad(seed);await writeProject(seed);projects=await readProjects();
     }
     setup();renderDashboard();renderLibrary();
