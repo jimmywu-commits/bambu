@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PrintLab｜模型工作台</title>
+<style>
+:root{--ink:#15211e;--ink2:#263531;--muted:#71807a;--paper:#f5f5ef;--panel:#fff;--line:#e4e8df;--green:#c9f36a;--green2:#a8d943;--orange:#e99058;--blue:#d9e9e5;--shadow:0 12px 32px #1828200c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #8dbd45;outline-offset:2px}
+.app{min-height:100vh;display:grid;grid-template-columns:238px 1fr}.sidebar{background:var(--ink);color:#eef1e9;padding:24px 15px 18px;display:flex;flex-direction:column;min-height:100vh;position:sticky;top:0;height:100vh}.brand{display:flex;gap:11px;align-items:center;padding:2px 10px 25px}.brand-mark{width:36px;height:36px;background:var(--green);border-radius:12px;display:grid;place-items:center;color:var(--ink);font-weight:900;font-size:17px}.brand-title{font-size:14px;letter-spacing:.12em;font-weight:800}.brand-sub{font-size:10px;color:#a7b4ac;margin-top:4px;letter-spacing:.11em}.nav-label{font-size:10px;color:#7f9086;letter-spacing:.16em;padding:10px 12px 7px}.nav{display:grid;gap:4px}.nav button,.side-action{border:0;background:transparent;color:#b8c2bb;text-align:left;border-radius:11px;padding:11px 12px;display:flex;align-items:center;gap:11px;transition:.18s}.nav button:hover,.nav button.active{color:#fff;background:#ffffff14}.nav button.active:before{content:"";width:4px;height:20px;border-radius:4px;background:var(--green);margin-left:-12px;margin-right:8px}.nav-icon{width:18px;text-align:center;color:var(--green);font-size:15px}.side-bottom{margin-top:auto}.side-note{border:1px solid #ffffff16;border-radius:14px;padding:14px;margin:12px 5px 15px;background:#ffffff08}.side-note b{display:block;color:var(--green);font-size:12px;margin-bottom:6px}.side-note p{margin:0;color:#aebbb3;font-size:11px;line-height:1.6}.side-action{font-size:12px;width:100%;padding:10px}.side-action:hover{background:#ffffff13;color:white}
+.main{min-width:0;padding:0 38px 42px}.topbar{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}.crumb{display:flex;align-items:center;gap:9px}.crumb strong{color:var(--ink);font-weight:700}.top-actions{display:flex;align-items:center;gap:10px}.local-pill{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:11px;color:#52635b}.local-dot{width:7px;height:7px;border-radius:50%;background:#79b94b}.content{max-width:1320px;margin:0 auto}.page{display:none;padding-top:30px}.page.active{display:block}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:23px}.eyebrow{font-size:10px;letter-spacing:.18em;color:#7f8b80;text-transform:uppercase;font-weight:800;margin-bottom:9px}.page-head h1{font-size:29px;line-height:1.15;margin:0;letter-spacing:-.04em}.page-head p{margin:9px 0 0;color:var(--muted);max-width:680px;line-height:1.65}.btn{border:0;border-radius:10px;background:var(--ink);color:#fff;font-weight:700;padding:11px 15px;display:inline-flex;gap:8px;align-items:center;justify-content:center;transition:.18s}.btn:hover{background:#32453e;transform:translateY(-1px)}.btn.primary{background:var(--green);color:var(--ink)}.btn.primary:hover{background:#d6fb82}.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.secondary:hover{border-color:#a7b9a8}.btn.small{padding:8px 11px;font-size:12px}.btn.danger{background:#fff1ea;color:#9f4f32;border:1px solid #f3d6c8}.icon-btn{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);display:grid;place-items:center}.icon-btn:hover{border-color:#afc192}
+.hero{background:var(--ink);color:#f8f8f1;border-radius:20px;padding:29px 31px;display:grid;grid-template-columns:1.45fr .8fr;gap:24px;align-items:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;right:7%;top:-210px;border:1px solid #ffffff18;box-shadow:0 0 0 25px #ffffff08,0 0 0 54px #ffffff05}.hero-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);font-weight:800}.hero h2{font-size:29px;line-height:1.25;margin:12px 0 9px;letter-spacing:-.04em;max-width:590px}.hero p{color:#b6c2ba;line-height:1.7;margin:0;max-width:590px}.hero-actions{margin-top:19px;display:flex;gap:9px;flex-wrap:wrap}.hero-visual{position:relative;z-index:1;min-height:148px;display:grid;place-items:center}.hero-visual svg{width:min(100%,310px);height:170px}.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:17px 0 23px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 18px;box-shadow:var(--shadow)}.stat-top{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}.stat-icon{color:#7c9b58;font-size:15px}.stat-num{font-weight:800;font-size:29px;margin-top:13px;letter-spacing:-.04em}.stat-foot{font-size:11px;color:var(--muted);margin-top:3px}.section-row{display:flex;align-items:center;justify-content:space-between;margin:22px 0 12px}.section-row h2{font-size:16px;margin:0;letter-spacing:-.02em}.text-link{border:0;background:none;color:#5e793d;font-size:12px;font-weight:700;padding:6px}.text-link:hover{text-decoration:underline}.grid-two{display:grid;grid-template-columns:1.3fr .7fr;gap:15px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:var(--shadow);min-width:0}.panel-title{font-size:13px;font-weight:800;margin:0 0 15px}.project-row{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #edf0ea}.project-row:first-of-type{border-top:0}.project-thumb{width:40px;height:40px;border-radius:11px;background:#eff5e2;display:grid;place-items:center;color:#678b39;font-size:17px}.project-name{font-weight:700;font-size:12px}.project-meta{font-size:10px;color:var(--muted);margin-top:4px}.badge{border-radius:999px;padding:5px 8px;font-size:10px;color:#597635;background:#eef5e3;white-space:nowrap}.badge.neutral{background:#eff1ef;color:#65716b}.badge.orange{background:#fbefe6;color:#a65c31}.empty{padding:25px 16px;text-align:center;color:var(--muted);line-height:1.7}.workflow{display:grid;gap:9px}.workflow-step{display:grid;grid-template-columns:29px 1fr;gap:11px;align-items:start}.step-dot{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#eef3e8;color:#648b3c;font-size:11px;font-weight:800}.step-title{font-size:11px;font-weight:800;margin:2px 0 4px}.step-copy{font-size:10px;color:var(--muted);line-height:1.5}
+.studio-layout{display:grid;grid-template-columns:minmax(350px,.86fr) minmax(420px,1.14fr);gap:16px;align-items:start}.form-panel{padding:20px}.field{display:grid;gap:6px;margin-bottom:14px}.field label{font-size:11px;font-weight:700;color:#43534b}.field input,.field select,.field textarea,.search-input{width:100%;border:1px solid #dfe5dd;border-radius:9px;padding:10px 11px;background:#fff;color:var(--ink)}.field input::placeholder,.field textarea::placeholder{color:#a7b0a9}.field textarea{resize:vertical;min-height:70px;line-height:1.55}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 11px}.field-hint{font-size:10px;color:var(--muted);line-height:1.5}.divider{height:1px;background:var(--line);margin:17px 0}.tiny-heading{font-size:10px;letter-spacing:.12em;color:#839087;font-weight:800;text-transform:uppercase;margin:0 0 12px}.status-select{max-width:190px}.preview-card{background:#f4f6f0;border:1px solid #e1e8dc;border-radius:14px;min-height:270px;padding:14px;display:flex;flex-direction:column}.preview-top{display:flex;justify-content:space-between;align-items:center;color:#718075;font-size:10px}.preview-stage{flex:1;min-height:215px;display:grid;place-items:center}.preview-stage svg{width:100%;height:230px}.preview-caption{font-size:10px;color:#718075;text-align:center;margin:4px 0 0}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}.metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}.metric label{font-size:9px;color:var(--muted);display:block}.metric strong{font-size:12px;display:block;margin-top:4px}.code-panel{margin-top:13px}.code-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.code-head h3{margin:0;font-size:12px}.code-head span{font-size:10px;color:var(--muted)}.code-box{width:100%;min-height:212px;max-height:320px;resize:vertical;border:1px solid #dfe5dd;border-radius:10px;background:#16231f;color:#d9edb5;padding:13px;font:11px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace}.code-note{font-size:10px;color:var(--muted);line-height:1.6;margin-top:8px}.button-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.attachment-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #edf0ea;padding:10px 0;font-size:11px}.attachment-row small{display:block;color:var(--muted);margin-top:3px}.file-label{display:inline-flex;align-items:center;gap:7px;border:1px dashed #c8d2c5;border-radius:9px;padding:9px 11px;color:#51634d;font-size:11px;cursor:pointer;background:#fbfcf8}.file-label input{display:none}
+.library-toolbar{display:flex;align-items:center;gap:9px;margin-bottom:15px}.library-toolbar .search-input{max-width:380px}.library-toolbar select{border:1px solid #dfe5dd;border-radius:9px;background:#fff;padding:10px;color:var(--ink)}.library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.model-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:208px}.model-art{height:88px;border-radius:10px;background:linear-gradient(135deg,#edf4de,#f7f8f4);display:grid;place-items:center;position:relative;overflow:hidden}.model-art svg{height:80px;width:120px}.model-card h3{font-size:13px;margin:13px 0 5px}.model-card p{font-size:10px;line-height:1.6;color:var(--muted);margin:0 0 10px}.model-card-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px}.card-actions{display:flex;gap:5px}.lesson-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.lesson{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:var(--shadow)}.lesson-number{font-size:10px;color:#739249;font-weight:800;letter-spacing:.13em}.lesson h3{font-size:14px;margin:9px 0 7px}.lesson p{font-size:11px;color:var(--muted);line-height:1.65;margin:0 0 11px}.lesson details{border-top:1px solid #edf0ea;padding-top:9px}.lesson summary{font-size:11px;font-weight:700;color:#597635;cursor:pointer}.lesson details p{margin:9px 0 0}.lesson-check{border:0;background:#eff5e7;color:#597635;border-radius:8px;padding:7px 9px;font-size:10px;font-weight:700}.lesson-check.done{background:var(--green);color:var(--ink)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;background:var(--ink);color:white;padding:11px 16px;border-radius:10px;box-shadow:0 10px 30px #0003;font-size:12px;transition:.22s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}.modal-wrap{position:fixed;inset:0;background:#0b1712a8;display:none;align-items:center;justify-content:center;padding:18px;z-index:15}.modal-wrap.show{display:flex}.modal{background:#fff;border-radius:17px;width:min(520px,100%);padding:22px;box-shadow:0 24px 80px #0003}.modal h2{font-size:18px;margin:0 0 8px}.modal p{font-size:12px;line-height:1.65;color:var(--muted)}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:1050px){.app{grid-template-columns:205px 1fr}.main{padding:0 23px 35px}.studio-layout{grid-template-columns:1fr}.library-grid,.lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1.3fr .7fr}}
+@media(max-width:720px){.app{display:block}.sidebar{position:sticky;z-index:10;top:0;height:auto;min-height:0;padding:8px 10px;display:block}.brand{padding:3px 6px 7px}.brand-mark{width:30px;height:30px;border-radius:9px}.brand-sub,.nav-label,.side-bottom{display:none}.nav{display:flex;overflow:auto;gap:5px;padding-bottom:2px}.nav button{white-space:nowrap;padding:8px 10px;font-size:11px}.nav button.active:before{display:none}.nav-icon{width:auto}.main{padding:0 14px 28px}.topbar{height:50px}.page{padding-top:22px}.page-head{align-items:flex-start;flex-direction:column}.page-head h1{font-size:25px}.hero{grid-template-columns:1fr;padding:22px}.hero h2{font-size:24px}.hero-visual{display:none}.stat-grid{gap:8px}.stat{padding:13px}.stat-num{font-size:24px}.grid-two{grid-template-columns:1fr}.library-grid,.lesson-grid{grid-template-columns:1fr}.field-grid{grid-template-columns:1fr 1fr}.library-toolbar{flex-wrap:wrap}.library-toolbar .search-input{max-width:none;flex:1 1 100%}.studio-layout{display:block}.preview-card{margin-top:14px}.top-actions .local-pill{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">P</div><div><div class="brand-title">PRINTLAB</div><div class="brand-sub">MODEL WORKSPACE</div></div></div>
+    <div class="nav-label">工作區</div>
+    <nav class="nav" aria-label="主要導覽">
+      <button class="active" data-page="dashboard"><span class="nav-icon">◫</span>總覽</button>
+      <button data-page="studio"><span class="nav-icon">⌘</span>建模工坊</button>
+      <button data-page="library"><span class="nav-icon">▤</span>模型庫</button>
+      <button data-page="learn"><span class="nav-icon">◉</span>學習中心</button>
+    </nav>
+    <div class="side-bottom">
+      <div class="side-note"><b>設計到實物</b><p>需求 → 外形 → 模型 → 切片 → 試印 → 回饋<br>每個作品保留規格與版本。</p></div>
+      <button class="side-action" id="exportData">⇩　備份工作區資料</button>
+      <label class="side-action" for="importData" style="cursor:pointer">⇧　匯入工作區備份<input id="importData" type="file" accept=".json,application/json" hidden></label>
+      <button class="side-action" id="aboutBtn">ⓘ　使用說明</button>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="crumb"><span>PrintLab</span><span>›</span><strong id="crumbName">總覽</strong></div><div class="top-actions"><span class="local-pill"><i class="local-dot"></i>資料保存在這台瀏覽器</span><button class="icon-btn" id="helpBtn" aria-label="說明">?</button></div></header>
+    <div class="content">
+      <section class="page active" id="page-dashboard">
+        <div class="page-head"><div><div class="eyebrow">DESIGN · LEARN · MANAGE</div><h1>把想法，做成拿得起來的東西。</h1><p>從尺寸規格開始建模，保留每個版本，回到 Bambu Studio 切片，再把實際列印結果記錄下來。</p></div><button class="btn primary" id="newProjectBtn">＋ 建立模型專案</button></div>
+        <div class="hero">
+          <div><div class="hero-label">第一個模型已建立</div><h2>從規格、模型到 Bambu Studio，集中在同一個工作區。</h2><p>先用參數化草稿產生 OpenSCAD 或 STL，再依實際機型與材料切片。裝配尺寸與強度，透過試片逐步校正。</p><div class="hero-actions"><button class="btn primary" id="heroStudio">開啟建模工坊　↗</button><button class="btn secondary" id="heroLibrary">瀏覽模型庫</button></div></div>
+          <div class="hero-visual"><svg viewBox="0 0 320 170" role="img" aria-label="模型工作流程示意"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#c9f36a"/><stop offset="1" stop-color="#8cbd43"/></linearGradient></defs><path d="M26 132h266" stroke="#fff" stroke-opacity=".2"/><path d="M52 110 119 72l59 34-67 39z" fill="#253932" stroke="#a9c979"/><path d="M119 72v54l-8 19v-55z" fill="#344a40" stroke="#a9c979"/><path d="m119 72 59 34v54l-59-34z" fill="#1b2b26" stroke="#a9c979"/><path d="M175 52a18 18 0 1 1 0 .1" fill="none" stroke="url(#g)" stroke-width="4"/><path d="M175 71v41" stroke="#c9f36a" stroke-width="8" stroke-linecap="round"/><path d="M175 112a18 18 0 1 1 0 .1" fill="none" stroke="url(#g)" stroke-width="4"/><circle cx="245" cy="74" r="21" fill="#c9f36a"/><path d="M236 74h18m-9-9v18" stroke="#1a2923" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat"><div class="stat-top"><span>模型專案</span><span class="stat-icon">▤</span></div><div class="stat-num" id="statTotal">0</div><div class="stat-foot">保存在本機瀏覽器</div></div>
+          <div class="stat"><div class="stat-top"><span>設計中</span><span class="stat-icon">⌘</span></div><div class="stat-num" id="statDesign">0</div><div class="stat-foot">持續補上模型與尺寸</div></div>
+          <div class="stat"><div class="stat-top"><span>待列印 / 試印</span><span class="stat-icon">△</span></div><div class="stat-num" id="statPrint">0</div><div class="stat-foot">進 Bambu Studio 前再核對切片</div></div>
+        </div>
+        <div class="grid-two">
+          <div class="panel"><div class="section-row" style="margin:0 0 8px"><h2>最近的模型</h2><button class="text-link" id="allModels">全部模型　→</button></div><div id="recentProjects"></div></div>
+          <div class="panel"><h2 class="panel-title">PrintLab 設計流程</h2><div class="workflow">
+            <div class="workflow-step"><div class="step-dot">01</div><div><div class="step-title">寫清楚用途與尺寸</div><div class="step-copy">記錄接觸物、受力方向、配合面和量測來源。</div></div></div>
+            <div class="workflow-step"><div class="step-dot">02</div><div><div class="step-title">選定外形與結構</div><div class="step-copy">新外形先比較方案，再依三視圖建立實際模型。</div></div></div>
+            <div class="workflow-step"><div class="step-dot">03</div><div><div class="step-title">檢查幾何與配合</div><div class="step-copy">檢查壁厚、孔位、公差、裝入路徑與支撐。</div></div></div>
+            <div class="workflow-step"><div class="step-dot">04</div><div><div class="step-title">切片、試印、記錄</div><div class="step-copy">以實際機型與材料確認方向、耗材和時間。</div></div></div>
+          </div></div>
+        </div>
+      </section>
+      <section class="page" id="page-studio">
+        <div class="page-head"><div><div class="eyebrow">PARAMETRIC WORKBENCH</div><h1>建模工坊</h1><p>輸入關鍵尺寸，產生可編輯的 OpenSCAD 來源。球端連接柱另可直接匯出 STL；其他模板可在 OpenSCAD 預覽後匯出。</p></div><button class="btn secondary" id="newBlankBtn">＋ 新模型</button></div>
+        <div class="studio-layout">
+          <div class="panel form-panel">
+            <div class="field"><label for="projectName">模型名稱</label><input id="projectName" placeholder="例如：球端連接柱"></div>
+            <div class="field"><label for="modelType">模型模板</label><select id="modelType"><option value="ball-connector">雙球端連接柱（目前模型）</option><option value="open-box">開口收納盒</option><option value="washer">圓形墊片 / 套環</option><option value="plate">雙孔固定板</option><option value="block">實心方塊</option></select><div class="field-hint">模板提供可編輯的起始幾何；特殊曲面、螺紋和精密配合仍需另行建模與試印。</div></div>
+            <div id="ballFields">
+              <div class="tiny-heading">尺寸規格 · mm</div>
+              <div class="field-grid">
+                <div class="field"><label for="totalLength">總長</label><input id="totalLength" type="number" step="0.01" min="1" value="26.94"></div>
+                <div class="field"><label for="ballDiameter">端部最大直徑</label><input id="ballDiameter" type="number" step="0.01" min="1" value="8.8"></div>
+                <div class="field"><label for="shaftDiameter">中間柱直徑</label><input id="shaftDiameter" type="number" step="0.01" min="0.8" value="4.9"></div>
+                <div class="field"><label for="blendLength">每端平滑過渡長</label><input id="blendLength" type="number" step="0.01" min="0.5" value="4.4"></div>
+              </div>
+              <div class="field-hint">兩端保留圓弧球狀端頭，不切平端面；內側以平滑曲線漸縮至柱身。總長包含兩端端頭與過渡段。</div>
+            </div>
+            <div id="generalFields" hidden>
+              <div class="tiny-heading">模型尺寸 · mm</div>
+              <div class="field-grid">
+                <div class="field"><label for="dimX">長 X</label><input id="dimX" type="number" min="1" step="0.1" value="40"></div>
+                <div class="field"><label for="dimY">寬 Y</label><input id="dimY" type="number" min="1" step="0.1" value="30"></div>
+                <div class="field"><label for="dimZ">高 Z</label><input id="dimZ" type="number" min="1" step="0.1" value="20"></div>
+                <div class="field"><label for="wallThickness">壁厚 / 底厚</label><input id="wallThickness" type="number" min="0.4" step="0.2" value="2"></div>
+                <div class="field"><label for="holeDiameter">孔徑</label><input id="holeDiameter" type="number" min="0.5" step="0.1" value="3.2"></div>
+                <div class="field"><label for="innerDiameter">墊片內徑</label><input id="innerDiameter" type="number" min="0.5" step="0.1" value="4"></div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="tiny-heading">使用條件</div>
+            <div class="field"><label for="purpose">用途 / 配合對象</label><textarea id="purpose" placeholder="要安裝在哪裡？接觸的零件尺寸、受力或移動方式是什麼？"></textarea></div>
+            <div class="field-grid">
+              <div class="field"><label for="printer">印表機</label><input id="printer" placeholder="例如：A1 / P1S / X1C"></div>
+              <div class="field"><label for="material">材料</label><input id="material" placeholder="例如：PLA / PETG"></div>
+            </div>
+            <div class="field"><label for="stage">專案進度</label><select class="status-select" id="stage"><option>設計中</option><option>待確認尺寸</option><option>待切片</option><option>待試印</option><option>已列印，待檢查</option><option>已驗收</option></select></div>
+            <div class="button-row"><button class="btn primary" id="saveProjectBtn">儲存模型專案</button><button class="btn secondary" id="specBtn">下載需求規格</button></div>
+            <div class="divider"></div>
+            <div class="section-row" style="margin:0 0 10px"><h2 style="font-size:12px;margin:0">模型附件</h2><label class="file-label">＋ 加入 STL / 3MF / 圖片<input id="attachInput" type="file" multiple accept=".stl,.3mf,.step,.stp,.scad,.png,.jpg,.jpeg,.webp"></label></div>
+            <div id="attachmentList"><div class="field-hint">先儲存專案，再附上參考圖或模型檔。</div></div>
+          </div>
+          <div>
+            <div class="preview-card"><div class="preview-top"><span>模型輪廓示意</span><span id="previewType">沿 Z 軸直立</span></div><div class="preview-stage" id="previewStage"></div><div class="preview-caption" id="previewCaption">預覽僅用於理解外形比例，最終幾何以匯出的模型為準。</div></div>
+            <div class="metrics"><div class="metric"><label>外形範圍</label><strong id="metricSize">26.94 mm</strong></div><div class="metric"><label>模型單位</label><strong>毫米 mm</strong></div><div class="metric"><label>方向建議</label><strong id="metricOrient">Z 軸直立</strong></div></div>
+            <div class="panel code-panel"><div class="code-head"><h3>OpenSCAD 參數化來源</h3><span>可自行編輯 / 重建</span></div><textarea class="code-box" id="scadCode" readonly spellcheck="false" aria-label="OpenSCAD 程式碼"></textarea><div class="code-note" id="scadNote">球端連接柱可另匯出 STL。打開 Bambu Studio 後仍需確認尺度、擺放、材料與切片預覽。</div>
+              <div class="button-row"><button class="btn small primary" id="downloadStlBtn">下載 STL 給 Bambu Studio</button><button class="btn small secondary" id="downloadScadBtn">下載 OpenSCAD</button><button class="btn small secondary" id="copyPromptBtn">複製建模需求</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="page" id="page-library">
+        <div class="page-head"><div><div class="eyebrow">MODEL LIBRARY</div><h1>模型庫</h1><p>管理需求、模型來源、版本與實物回饋。附件與專案資料儲存在目前瀏覽器，可匯出 JSON 備份。</p></div><button class="btn primary" id="libraryNew">＋ 建立模型</button></div>
+        <div class="library-toolbar"><input id="searchModels" class="search-input" placeholder="搜尋模型名稱、用途、材料…"><select id="filterStage"><option value="">所有進度</option><option>設計中</option><option>待確認尺寸</option><option>待切片</option><option>待試印</option><option>已列印，待檢查</option><option>已驗收</option></select><span class="field-hint" id="libraryCount"></span></div>
+        <div class="library-grid" id="modelGrid"></div>
+      </section>
+      <section class="page" id="page-learn">
+        <div class="page-head"><div><div class="eyebrow">LEARN BY MAKING</div><h1>學習中心</h1><p>把設計判斷放進每次建模與試印。尺寸、公差和支撐設定會受到材料、機型與擺放方向影響，先做小樣再定版。</p></div><button class="btn secondary" id="learnStart">從第一個練習開始　↗</button></div>
+        <div class="lesson-grid" id="lessonGrid"></div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal-wrap" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">PrintLab 模型工作台</h2><p>用來整理模型需求、產生簡單參數化幾何、記錄學習與管理模型版本。球端連接柱可直接匯出 STL；其他模板先下載 OpenSCAD 原始碼，再以 OpenSCAD 產生網格檔。</p><p><b>資料位置：</b>模型和附件保存在目前瀏覽器的本機資料庫。請定期按「備份工作區資料」下載 JSON；清除瀏覽器資料前先備份。此檔案本身不會自動連線印表機，也不會替你啟動列印。</p><p><b>Bambu Studio：</b>匯入 STL / 3MF 後請確認模型尺寸、機型、噴嘴、材料、列印板、方向、支撐與切片預覽。模型中預設的方向建議只是起點。</p><div class="modal-actions"><button class="btn primary" id="closeAbout">知道了</button></div></div></div>
+<script>
+(() => {
+  "use strict";
+  const DB_NAME = "printlab-model-workspace";
+  const DB_VERSION = 1;
+  const FALLBACK_KEY = "printlab-models-v1";
+  const LESSON_KEY = "printlab-lessons-v1";
+  let db = null;
+  let fallbackMode = false;
+  let projects = [];
+  let activeId = null;
+  let toastTimer = null;
+  const $ = (id) => document.getElementById(id);
+  const escapeHtml = (value) => String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  const uid = () => "p-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,8);
+  const fmt = (n) => Number(n || 0).toLocaleString("zh-TW",{maximumFractionDigits:2});
+  const toast = (message) => { const el=$("toast"); el.textContent=message; el.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove("show"),2600); };
+  const dateText = (stamp) => { try { return new Intl.DateTimeFormat("zh-TW",{year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(stamp)); } catch (_) { return ""; } };
+
+  function openDatabase() {
+    return new Promise((resolve, reject) => {
+      if (!("indexedDB" in window)) { reject(new Error("IndexedDB unavailable")); return; }
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        if (!d.objectStoreNames.contains("projects")) d.createObjectStore("projects", {keyPath:"id"});
+        if (!d.objectStoreNames.contains("attachments")) d.createObjectStore("attachments", {keyPath:"key"});
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error("Database open failed"));
+    });
+  }
+  function requestStore(storeName, mode, action, value) {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(storeName, mode);
+      const store = tx.objectStore(storeName);
+      let req;
+      if (action === "all") req = store.getAll();
+      else if (action === "get") req = store.get(value);
+      else if (action === "delete") req = store.delete(value);
+      else req = store.put(value);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error("Database request failed"));
+    });
+  }
+  async function readProjects() {
+    if (!fallbackMode && db) return await requestStore("projects","readonly","all");
+    try { return JSON.parse(localStorage.getItem(FALLBACK_KEY) || "[]"); } catch (_) { return []; }
+  }
+  async function writeProject(record) {
+    if (!fallbackMode && db) return await requestStore("projects","readwrite","put",record);
+    const rows = await readProjects();
+    const at = rows.findIndex(x=>x.id===record.id);
+    if (at >= 0) rows[at] = record; else rows.unshift(record);
+    localStorage.setItem(FALLBACK_KEY,JSON.stringify(rows));
+  }
+  async function deleteProject(id) {
+    if (!fallbackMode && db) {
+      await requestStore("projects","readwrite","delete",id);
+      const attached = await requestStore("attachments","readonly","all");
+      for (const item of attached) if (item.projectId === id) await requestStore("attachments","readwrite","delete",item.key);
+    } else {
+      const rows = await readProjects(); localStorage.setItem(FALLBACK_KEY,JSON.stringify(rows.filter(x=>x.id!==id)));
+    }
+  }
+  async function saveAttachment(projectId, file) {
+    const fileId = uid();
+    const info = {id:fileId,name:file.name,type:file.type||"application/octet-stream",size:file.size};
+    if (!fallbackMode && db) await requestStore("attachments","readwrite","put",{key:projectId+"/"+fileId,projectId,info,blob:file});
+    return info;
+  }
+  async function getAttachment(projectId, fileId) {
+    if (!fallbackMode && db) return await requestStore("attachments","readonly","get",projectId+"/"+fileId);
+    return null;
+  }
+  async function removeAttachment(projectId, fileId) {
+    if (!fallbackMode && db) await requestStore("attachments","readwrite","delete",projectId+"/"+fileId);
+    const p = projects.find(x=>x.id===projectId); if (!p) return;
+    p.attachments=(p.attachments||[]).filter(x=>x.id!==fileId); await writeProject(p); projects=await readProjects();
+  }
+
+  function getFormData() {
+    const type=$("modelType").value;
+    const common={name:$("projectName").value.trim()||"未命名模型",type,purpose:$("purpose").value.trim(),printer:$("printer").value.trim(),material:$("material").value.trim(),stage:$("stage").value};
+    if (type==="ball-connector") return Object.assign(common,{totalLength:+$("totalLength").value,ballDiameter:+$("ballDiameter").value,shaftDiameter:+$("shaftDiameter").value,blendLength:+$("blendLength").value});
+    return Object.assign(common,{x:+$("dimX").value,y:+$("dimY").value,z:+$("dimZ").value,wall:+$("wallThickness").value,holeDiameter:+$("holeDiameter").value,innerDiameter:+$("innerDiameter").value});
+  }
+  function validData(d) {
+    const nums=d.type==="ball-connector"?[d.totalLength,d.ballDiameter,d.shaftDiameter,d.blendLength]:[d.x,d.y,d.z,d.wall,d.holeDiameter,d.innerDiameter];
+    if (nums.some(x=>!Number.isFinite(x)||x<=0)) { toast("請檢查尺寸，所有數值都必須大於 0。"); return false; }
+    if (d.type==="ball-connector" && (d.shaftDiameter>=d.ballDiameter || d.totalLength<=2*(d.ballDiameter/2+d.blendLength))) {
+      toast("柱徑須小於端部直徑，且總長要留出中央直柱。"); return false;
+    }
+    if (d.type==="open-box" && (d.wall*2>=d.x || d.wall*2>=d.y || d.wall>=d.z)) { toast("盒子壁厚過大，請縮小壁厚或放大外形。"); return false; }
+    if (d.type==="washer" && d.innerDiameter>=Math.min(d.x,d.y)) { toast("墊片內徑必須小於外徑。"); return false; }
+    return true;
+  }
+  function ballProfile(d, steps) {
+    const R=d.ballDiameter/2, r0=d.shaftDiameter/2, T=d.blendLength, H=d.totalLength;
+    const profile=[];
+    const add=(r,z)=>profile.push([Math.max(0,r),z]);
+    const n=steps||36;
+    add(0,0);
+    for(let i=1;i<=n;i++){const z=R*i/n; add(Math.sqrt(Math.max(0,R*R-(z-R)*(z-R))),z);}
+    for(let i=1;i<=n;i++){const t=i/n; add(r0+(R-r0)*(1+Math.cos(Math.PI*t))/2,R+T*t);}
+    const z2=H-R-T;
+    add(r0,z2);
+    for(let i=1;i<=n;i++){const t=i/n; add(r0+(R-r0)*(1-Math.cos(Math.PI*t))/2,z2+T*t);}
+    for(let i=1;i<=n;i++){const z=z2+T+R*i/n; add(Math.sqrt(Math.max(0,R*R-(z-(H-R))*(z-(H-R)))),z);}
+    return profile;
+  }
+  function makeScad(d) {
+    if(d.type==="ball-connector"){
+      const pts=ballProfile(d,48).map(p=>"  ["+p[0].toFixed(4)+", "+p[1].toFixed(4)+"]").join(",\n");
+      return "// PrintLab - 雙球端連接柱，單位 mm\n// 最大端部直徑 "+d.ballDiameter+" / 柱徑 "+d.shaftDiameter+" / 總長 "+d.totalLength+"\n// 球狀端頭不切平；端部以相切曲線漸縮至柱身。\n$fn = 128;\nrotate_extrude(convexity = 10)\n  polygon(points = [\n"+pts+"\n  ]);\n";
+    }
+    if(d.type==="open-box") return "// PrintLab - 開口收納盒，單位 mm\n$fn = 64;\ndifference() {\n  cube(["+d.x+", "+d.y+", "+d.z+"]);\n  translate(["+d.wall+", "+d.wall+", "+d.wall+"])\n    cube(["+(d.x-2*d.wall)+", "+(d.y-2*d.wall)+", "+(d.z-d.wall+0.02)+"]);\n}\n";
+    if(d.type==="washer") return "// PrintLab - 圓形墊片 / 套環，單位 mm\n$fn = 96;\ndifference() {\n  cylinder(h = "+d.z+", d = "+d.x+");\n  translate([0,0,-0.1]) cylinder(h = "+(d.z+0.2)+", d = "+d.innerDiameter+");\n}\n";
+    if(d.type==="plate") return "// PrintLab - 雙孔固定板，單位 mm\n$fn = 64;\ndifference() {\n  cube(["+d.x+", "+d.y+", "+d.z+"]);\n  for (xpos = ["+(d.x*0.25).toFixed(2)+", "+(d.x*0.75).toFixed(2)+"])\n    translate([xpos, "+(d.y/2).toFixed(2)+", -0.1]) cylinder(h = "+(d.z+0.2)+", d = "+d.holeDiameter+");\n}\n";
+    return "// PrintLab - 實心方塊，單位 mm\ncube(["+d.x+", "+d.y+", "+d.z+"]);\n";
+  }
+  function triangleMesh(d, angularSegments) {
+    const profile=ballProfile(d,72), seg=angularSegments||96, vertices=[], offsets=[];
+    for(const [r,z] of profile) {
+      offsets.push(vertices.length);
+      if(r===0) { vertices.push([0,0,z]); continue; }
+      for(let i=0;i<seg;i++){const a=2*Math.PI*i/seg; vertices.push([r*Math.cos(a),r*Math.sin(a),z]);}
+    }
+    const faces=[];
+    for(let j=0;j<profile.length-1;j++){
+      const r1=profile[j][0], r2=profile[j+1][0], base1=offsets[j], base2=offsets[j+1];
+      if(r1===0) {
+        for(let i=0;i<seg;i++) faces.push([base1,base2+(i+1)%seg,base2+i]);
+      } else if(r2===0) {
+        for(let i=0;i<seg;i++) faces.push([base1+i,base1+(i+1)%seg,base2]);
+      } else {
+        for(let i=0;i<seg;i++){const a=base1+i,b=base1+(i+1)%seg,c=base2+i,e=base2+(i+1)%seg;faces.push([a,b,c],[b,e,c]);}
+      }
+    }
+    return {vertices,faces};
+  }
+  function stlBlob(d) {
+    const mesh=triangleMesh(d,96), count=mesh.faces.length, buffer=new ArrayBuffer(84+count*50), view=new DataView(buffer);
+    const header="PrintLab dual rounded ends, mm; D="+d.ballDiameter+"; shaft="+d.shaftDiameter+"; L="+d.totalLength;
+    for(let i=0;i<Math.min(80,header.length);i++) view.setUint8(i,header.charCodeAt(i));
+    view.setUint32(80,count,true);
+    let offset=84;
+    for(const face of mesh.faces){
+      const a=mesh.vertices[face[0]],b=mesh.vertices[face[1]],c=mesh.vertices[face[2]];
+      const ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2],vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
+      let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;const len=Math.hypot(nx,ny,nz)||1;nx/=len;ny/=len;nz/=len;
+      [nx,ny,nz,...a,...b,...c].forEach(v=>{view.setFloat32(offset,v,true);offset+=4;});
+      view.setUint16(offset,0,true);offset+=2;
+    }
+    return new Blob([buffer],{type:"model/stl"});
+  }
+  function profileSvg(d) {
+    const P=ballProfile(d,54), maxR=d.ballDiameter/2, padX=68,padY=23, availH=194, scale=availH/d.totalLength;
+    const cx=190, top=padY, midX=maxR*scale;
+    const right=P.map(([r,z])=>(cx+r*scale).toFixed(2)+","+(top+z*scale).toFixed(2));
+    const left=P.slice().reverse().map(([r,z])=>(cx-r*scale).toFixed(2)+","+(top+z*scale).toFixed(2));
+    const points=right.concat(left).join(" ");
+    return '<svg viewBox="0 0 380 240" role="img" aria-label="雙球端連接柱側面輪廓"><defs><linearGradient id="bodyFill" x1="0" x2="1"><stop stop-color="#aacb6c"/><stop offset=".48" stop-color="#d6edaa"/><stop offset="1" stop-color="#88ad4f"/></linearGradient></defs><line x1="190" y1="16" x2="190" y2="221" stroke="#ccd7c7" stroke-dasharray="3 4"/><polygon points="'+points+'" fill="url(#bodyFill)" stroke="#53703b" stroke-width="1.5"/><line x1="'+(cx-maxR*scale-15)+'" y1="'+(top+maxR*scale)+'" x2="'+(cx+maxR*scale+15)+'" y2="'+(top+maxR*scale)+'" stroke="#8b9b87" stroke-dasharray="2 3"/><text x="286" y="39" font-size="10" fill="#53625a">端部 Ø '+fmt(d.ballDiameter)+' mm</text><text x="286" y="123" font-size="10" fill="#53625a">柱身 Ø '+fmt(d.shaftDiameter)+' mm</text><text x="20" y="120" font-size="10" fill="#53625a" transform="rotate(-90 20 120)">總長 '+fmt(d.totalLength)+' mm</text><text x="160" y="231" font-size="9" fill="#819087">Z 軸 / 側視輪廓</text></svg>';
+  }
+  function genericSvg(d) {
+    const sx=165/Math.max(1,d.x+d.y), sz=116/Math.max(1,d.z);
+    const s=Math.min(sx,sz,2.2), ox=184,oy=167;
+    const pt=(x,y,z)=>[ox+(x-y)*s*.52,oy+(x+y)*s*.27-z*s*.72];
+    const a=pt(0,0,0),b=pt(d.x,0,0),c=pt(d.x,d.y,0),e=pt(0,d.y,0),A=pt(0,0,d.z),B=pt(d.x,0,d.z),C=pt(d.x,d.y,d.z),E=pt(0,d.y,d.z);
+    const poly=(arr,fill)=>'<polygon points="'+arr.map(p=>p.map(v=>v.toFixed(1)).join(",")).join(" ")+'" fill="'+fill+'" stroke="#53703b" stroke-width="1.5"/>';
+    return '<svg viewBox="0 0 380 230" role="img" aria-label="模型比例示意">'+poly([A,B,C,E],"#dbedb7")+poly([b,c,C,B],"#a8c873")+poly([e,c,C,E],"#bcd590")+'<text x="18" y="218" font-size="10" fill="#53625a">'+escapeHtml(d.type==="open-box"?"開口盒":d.type==="washer"?"圓形套環":d.type==="plate"?"雙孔板":"方塊")+'　'+fmt(d.x)+" × "+fmt(d.y)+" × "+fmt(d.z)+' mm</text></svg>';
+  }
+  function updatePreview() {
+    const d=getFormData();
+    $("scadCode").value=makeScad(d);
+    if(d.type==="ball-connector"){
+      $("previewStage").innerHTML=profileSvg(d);
+      $("previewType").textContent="沿 Z 軸直立";
+      $("metricSize").textContent=fmt(d.totalLength)+" mm";
+      $("metricOrient").textContent="Z 軸直立";
+      $("scadNote").textContent="端部保留圓弧尖端，不切平；球狀端頭以平滑漸縮頸部連接柱身。STL 使用毫米座標，可匯入 Bambu Studio；支撐需求仍請以切片預覽確認。";
+      $("downloadStlBtn").disabled=false;
+      $("downloadStlBtn").style.opacity="1";
+    } else {
+      $("previewStage").innerHTML=genericSvg(d);
+      $("previewType").textContent="幾何比例示意";
+      $("metricSize").textContent=fmt(d.x)+" × "+fmt(d.y)+" × "+fmt(d.z);
+      $("metricOrient").textContent="依用途擺放";
+      $("scadNote").textContent="此模板目前輸出 OpenSCAD 來源。使用 OpenSCAD 按 F6 產生幾何，再匯出 STL / 3MF；匯入 Bambu Studio 後重查尺寸與切片。";
+      $("downloadStlBtn").disabled=true;
+      $("downloadStlBtn").style.opacity=".5";
+    }
+  }
+  function setForm(d) {
+    $("projectName").value=d.name||"";
+    $("modelType").value=d.type||"ball-connector";
+    $("purpose").value=d.purpose||"";
+    $("printer").value=d.printer||"";
+    $("material").value=d.material||"";
+    $("stage").value=d.stage||"設計中";
+    if(d.type==="ball-connector"){
+      $("totalLength").value=d.totalLength||26.94; $("ballDiameter").value=d.ballDiameter||8.8; $("shaftDiameter").value=d.shaftDiameter||4.9; $("blendLength").value=d.blendLength||4.4;
+    } else {
+      $("dimX").value=d.x||40; $("dimY").value=d.y||30; $("dimZ").value=d.z||20; $("wallThickness").value=d.wall||2; $("holeDiameter").value=d.holeDiameter||3.2; $("innerDiameter").value=d.innerDiameter||4;
+    }
+    $("ballFields").hidden=d.type!=="ball-connector";
+    $("generalFields").hidden=d.type==="ball-connector";
+    updatePreview();
+  }
+  function makePrompt(d) {
+    const dimensions="外形 "+d.x+" × "+d.y+" × "+d.z+" mm；壁 / 底厚 "+d.wall+" mm；孔徑 "+d.holeDiameter+" mm。";
+    if(d.type==="ball-connector") {
+      return [
+        "請依 PrintLab 設計流程協助建立可列印模型。",
+        "模型："+d.name,
+        "用途："+(d.purpose||"待補"),
+        "尺寸：總長 "+d.totalLength+" mm；兩端最大直徑 "+d.ballDiameter+" mm；中間柱直徑 "+d.shaftDiameter+" mm；兩端各有 "+d.blendLength+" mm 平滑過渡；端面保留圓弧尖端、不切平。",
+        "印表機："+(d.printer||"待確認"),
+        "材料："+(d.material||"待確認"),
+        "請先指出缺少的實測尺寸與假設，保留可編輯 CAD 來源，檢查壁厚、配合公差、裝配方向、承力與支撐；輸出 STL / 3MF 前列出需要在 Bambu Studio 核對的項目。"
+      ].join("\n");
+    }
+    return [
+      "請依 PrintLab 設計流程協助建立可列印模型。",
+      "模型："+d.name,
+      "用途："+(d.purpose||"待補"),
+      "尺寸："+dimensions,
+      "印表機："+(d.printer||"待確認"),
+      "材料："+(d.material||"待確認"),
+      "請先指出缺少的實測尺寸與假設，保留可編輯 CAD 來源，檢查壁厚、配合公差、裝配方向、承力與支撐；輸出 STL / 3MF 前列出需要在 Bambu Studio 核對的項目。"
+    ].join("\n");
+  }
+  function updateAttachments() {
+    const p=projects.find(x=>x.id===activeId), host=$("attachmentList");
+    if(!p || !(p.attachments||[]).length){host.innerHTML='<div class="field-hint">'+(activeId?"尚未加入附件。":"先儲存專案，再附上參考圖或模型檔。")+'</div>';return;}
+    host.innerHTML=p.attachments.map(a=>'<div class="attachment-row"><div>▧　'+escapeHtml(a.name)+'<small>'+fmt(a.size/1024)+' KB</small></div><div><button class="text-link" data-download-attachment="'+escapeHtml(a.id)+'">下載</button><button class="text-link" data-remove-attachment="'+escapeHtml(a.id)+'">移除</button></div></div>').join("");
+    host.querySelectorAll("[data-download-attachment]").forEach(btn=>btn.onclick=async()=>{const row=await getAttachment(p.id,btn.dataset.downloadAttachment);if(!row){toast("找不到附件內容。");return;}const url=URL.createObjectURL(row.blob);const a=document.createElement("a");a.href=url;a.download=row.info.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+    host.querySelectorAll("[data-remove-attachment]").forEach(btn=>btn.onclick=async()=>{await removeAttachment(p.id,btn.dataset.removeAttachment);toast("附件已移除。");updateAttachments();});
+  }
+  function iconFor(type){return type==="ball-connector"?"◉":type==="open-box"?"▱":type==="washer"?"◎":type==="plate"?"▤":"◻";}
+  function stageClass(stage){return stage==="待試印"||stage==="待切片"?"orange":stage==="已驗收"?"neutral":"";}
+  function renderDashboard() {
+    $("statTotal").textContent=projects.length;
+    $("statDesign").textContent=projects.filter(p=>p.stage==="設計中"||p.stage==="待確認尺寸").length;
+    $("statPrint").textContent=projects.filter(p=>p.stage==="待切片"||p.stage==="待試印").length;
+    const host=$("recentProjects");
+    const rows=projects.slice().sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||"")).slice(0,4);
+    if(!rows.length){host.innerHTML='<div class="empty">還沒有模型專案。<br>建立第一個模型，開始記錄尺寸與版本。</div>';return;}
+    host.innerHTML=rows.map(p=>'<div class="project-row"><div class="project-thumb">'+iconFor(p.type)+'</div><div><div class="project-name">'+escapeHtml(p.name)+'</div><div class="project-meta">'+escapeHtml(p.type==="ball-connector"?"雙球端連接柱":p.type==="open-box"?"開口收納盒":p.type==="washer"?"圓形墊片":p.type==="plate"?"雙孔固定板":"實心方塊")+'　·　更新 '+dateText(p.updatedAt)+'</div></div><span class="badge '+stageClass(p.stage)+'">'+escapeHtml(p.stage)+'</span></div>').join("");
+  }
+  function renderLibrary() {
+    const q=($("searchModels").value||"").toLowerCase(), status=$("filterStage").value;
+    const rows=projects.filter(p=>(!status||p.stage===status)&&(!q||(p.name+" "+p.purpose+" "+p.material+" "+p.printer).toLowerCase().includes(q))).sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||""));
+    $("libraryCount").textContent=rows.length+" 個模型";
+    if(!rows.length){$("modelGrid").innerHTML='<div class="panel empty" style="grid-column:1/-1">沒有符合的模型。可以調整搜尋條件或建立新模型。</div>';return;}
+    $("modelGrid").innerHTML=rows.map(p=>'<article class="model-card"><div class="model-art">'+iconFor(p.type)+'<span style="font-size:11px;color:#7b8e73;margin-left:8px">'+(p.type==="ball-connector"?"球端連接柱":"參數模型")+'</span></div><h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.purpose||"尚未填寫用途")+'<br>更新 '+dateText(p.updatedAt)+' · v'+(p.revision||1)+'</p><div class="model-card-foot"><span class="badge '+stageClass(p.stage)+'">'+escapeHtml(p.stage)+'</span><div class="card-actions"><button class="icon-btn" title="下載 OpenSCAD" data-scad="'+escapeHtml(p.id)+'">↓</button><button class="btn small secondary" data-open="'+escapeHtml(p.id)+'">開啟</button><button class="icon-btn" title="刪除專案" data-delete="'+escapeHtml(p.id)+'">×</button></div></div></article>').join("");
+    $("modelGrid").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openProject(b.dataset.open));
+    $("modelGrid").querySelectorAll("[data-scad]").forEach(b=>b.onclick=()=>downloadScadFor(projects.find(p=>p.id===b.dataset.scad)));
+    $("modelGrid").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>confirmDelete(b.dataset.delete));
+  }
+  function download(name, blob) { const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200); }
+  function safeFilename(name){return (name||"model").replace(/[\\/:*?"<>|\s]+/g,"_").slice(0,80)||"model";}
+  function downloadScadFor(p) { if(!p){toast("請先儲存模型。");return;}const data=Object.assign({},p);download(safeFilename(p.name)+".scad",new Blob([p.scad||makeScad(p)],{type:"text/plain;charset=utf-8"})); }
+  async function saveCurrent() {
+    const d=getFormData(); if(!validData(d))return;
+    const old=projects.find(p=>p.id===activeId);
+    const record=Object.assign({},old||{},d,{id:activeId||uid(),createdAt:old?old.createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),revision:old?(old.revision||1)+1:1,attachments:old?(old.attachments||[]):[],scad:makeScad(d)});
+    activeId=record.id; await writeProject(record); projects=await readProjects(); renderDashboard(); renderLibrary(); updateAttachments(); toast("模型專案已儲存，版本 v"+record.revision+"。");
+  }
+  async function openProject(id) { const p=projects.find(x=>x.id===id); if(!p)return; activeId=id; setForm(p); updateAttachments(); showPage("studio"); toast("已開啟 "+p.name+"。"); }
+  function newProject() { activeId=null; setForm({name:"新模型",type:"ball-connector",totalLength:26.94,ballDiameter:8.8,shaftDiameter:4.9,blendLength:4.4,stage:"設計中"}); updateAttachments(); showPage("studio"); $("projectName").focus(); }
+  async function confirmDelete(id) {
+    const p=projects.find(x=>x.id===id);if(!p)return;
+    if(!window.confirm("刪除「"+p.name+"」及其附件？此操作無法復原。"))return;
+    await deleteProject(id); projects=await readProjects(); if(activeId===id)activeId=null; renderLibrary();renderDashboard();toast("專案已刪除。");
+  }
+  function showPage(name) {
+    document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+name));
+    document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===name));
+    $("crumbName").textContent={dashboard:"總覽",studio:"建模工坊",library:"模型庫",learn:"學習中心"}[name]||"總覽";
+    if(name==="dashboard")renderDashboard(); if(name==="library")renderLibrary(); if(name==="studio")updatePreview();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function exportSpec() {
+    const d=getFormData();if(!validData(d))return;
+    const dimensions=d.type==="ball-connector"?"總長 "+d.totalLength+"；端部最大直徑 "+d.ballDiameter+"；柱徑 "+d.shaftDiameter+"；平滑過渡 "+d.blendLength+" / 每端":d.x+" × "+d.y+" × "+d.z+"；壁厚 "+d.wall+"；孔徑 "+d.holeDiameter;
+    const content=[
+      "# "+d.name,"","## 規格","","- 模型模板："+d.type,"- 單位：mm","- 尺寸："+dimensions,
+      "- 用途："+(d.purpose||"待補"),"- 印表機："+(d.printer||"待確認"),"- 材料："+(d.material||"待確認"),"- 進度："+d.stage,
+      "","## 列印前確認","","- 在 Bambu Studio 核對機型、噴嘴、材料與列印板。","- 確認尺寸、方向、支撐、首層與切片預覽。","- 配合尺寸與強度以實物試片確認。",""
+    ].join("\n");
+    download(safeFilename(d.name)+"_規格.md",new Blob([content],{type:"text/markdown;charset=utf-8"}));
+  }
+  function exportWorkspace() {
+    const pack={format:"PrintLabWorkspace",version:1,exportedAt:new Date().toISOString(),projects};
+    download("PrintLab_模型工作區備份.json",new Blob([JSON.stringify(pack,null,2)],{type:"application/json;charset=utf-8"}));
+    toast("工作區 JSON 備份已下載。附件檔案請另行下載保存。");
+  }
+  async function importWorkspace(file) {
+    try{
+      const data=JSON.parse(await file.text()), rows=Array.isArray(data)?data:data.projects;
+      if(!Array.isArray(rows))throw new Error("格式不符");
+      for(const p of rows){if(!p||!p.id||!p.name)continue;await writeProject(p);}
+      projects=await readProjects();renderDashboard();renderLibrary();toast("備份已匯入 "+rows.length+" 筆專案。");
+    }catch(_){toast("無法匯入，請選擇 PrintLab JSON 備份檔。");}
+    $("importData").value="";
+  }
+  function lessonDoneSet(){try{return JSON.parse(localStorage.getItem(LESSON_KEY)||"[]");}catch(_){return [];}}
+  const lessons=[
+    {title:"先寫需求，再畫外形",desc:"把用途、使用者、配合面和驗收方式先記下來。",body:"每個模型先回答：它要做什麼？接觸哪些零件？哪個尺寸有實測？哪個位置不能改？要承受什麼方向的力？這些資訊會決定模型怎麼拆件、擺放和驗收。"},
+    {title:"尺寸與公差用試片校正",desc:"名義尺寸不等於列印後的實際尺寸，卡扣和孔洞尤其如此。",body:"不同機型、噴嘴、材料、流量與方向都可能改變實際配合。先做一片只含孔槽與卡扣的短試片，記錄模型名義值、切片設定和實測結果，再回填到主模型。避免只靠通用公差值直接定版。"},
+    {title:"壁厚跟受力方向一起看",desc:"先找出容易折斷的位置，再決定壁厚、圓角和列印方向。",body:"小尺寸零件可從整數條線寬來規劃壁厚；承力部位優先增加連續材料、避免尖角和突然變薄。讓層線順著主要受力方向，常比單純增加填充率更有效。列印後仍需以實物負載驗收。"},
+    {title:"方向、懸垂與支撐",desc:"朝向會改變支撐需求、表面品質和層間強度。",body:"比較至少兩種擺放方向，觀察懸垂面、支撐接觸面、首層面積和層線方向。圓弧漸變可以降低尖銳轉折，但不保證完全無支撐；切片預覽中的實際懸垂和橋接才是判斷依據。"},
+    {title:"Bambu Studio 切片前核對",desc:"確認機型、噴嘴、材料、列印板和模型尺寸。",body:"匯入模型後先看尺寸是否以毫米正確讀入，再選對印表機和噴嘴。逐項核對材料、板型、擺放、支撐、壁數、填充、首層與切片時間；有 AMS 時確認材料槽位和顏色對應。"},
+    {title:"試印後記錄版本回饋",desc:"用量測和實際裝配結果修正模型，不只記「成功 / 失敗」。",body:"記錄列印檔版本、材料、切片設定、尺寸實測、裝配手感、強度與缺陷位置。指出是哪個尺寸或曲面要改，更新版本號並保留舊檔，讓下一次列印能對照差異。"}
+  ];
+  function renderLessons(){
+    const done=lessonDoneSet();
+    $("lessonGrid").innerHTML=lessons.map((l,i)=>'<article class="lesson"><div class="lesson-number">LESSON '+String(i+1).padStart(2,"0")+'</div><h3>'+escapeHtml(l.title)+'</h3><p>'+escapeHtml(l.desc)+'</p><details><summary>展開學習重點</summary><p>'+escapeHtml(l.body)+'</p></details><div style="margin-top:13px"><button class="lesson-check '+(done.includes(i)?"done":"")+'" data-lesson="'+i+'">'+(done.includes(i)?"✓ 已讀":"標記已讀")+'</button></div></article>').join("");
+    $("lessonGrid").querySelectorAll("[data-lesson]").forEach(b=>b.onclick=()=>{let s=lessonDoneSet();const i=+b.dataset.lesson;s=s.includes(i)?s.filter(x=>x!==i):s.concat(i);localStorage.setItem(LESSON_KEY,JSON.stringify(s));renderLessons();});
+  }
+  async function addAttachments(files) {
+    if(!activeId){toast("請先儲存專案，再加入附件。");$("attachInput").value="";return;}
+    const p=projects.find(x=>x.id===activeId);if(!p)return;
+    for(const file of files){try{const info=await saveAttachment(activeId,file);p.attachments=p.attachments||[];p.attachments.push(info);}catch(_){toast("附件儲存失敗，可能是瀏覽器空間不足。");}}
+    await writeProject(p);projects=await readProjects();updateAttachments();$("attachInput").value="";toast("附件已加入模型專案。");
+  }
+  function setup() {
+    document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+    $("newProjectBtn").onclick=newProject;$("newBlankBtn").onclick=newProject;$("libraryNew").onclick=newProject;$("heroStudio").onclick=()=>showPage("studio");$("heroLibrary").onclick=()=>showPage("library");$("allModels").onclick=()=>showPage("library");
+    $("saveProjectBtn").onclick=saveCurrent;$("specBtn").onclick=exportSpec;$("downloadScadBtn").onclick=()=>{const d=getFormData();download(safeFilename(d.name)+".scad",new Blob([makeScad(d)],{type:"text/plain;charset=utf-8"}));};
+    $("downloadStlBtn").onclick=()=>{const d=getFormData();if(d.type!=="ball-connector"||!validData(d))return;download(safeFilename(d.name)+".stl",stlBlob(d));toast("STL 已產生；匯入 Bambu Studio 後請核對尺寸與切片。");};
+    $("copyPromptBtn").onclick=async()=>{try{await navigator.clipboard.writeText(makePrompt(getFormData()));toast("建模需求已複製。");}catch(_){$("scadCode").focus();toast("瀏覽器未提供剪貼簿權限，請直接複製需求規格。");}};
+    $("modelType").onchange=()=>{const ball=$("modelType").value==="ball-connector";$("ballFields").hidden=!ball;$("generalFields").hidden=ball;updateAttachments();updatePreview();};
+    ["projectName","totalLength","ballDiameter","shaftDiameter","blendLength","dimX","dimY","dimZ","wallThickness","holeDiameter","innerDiameter","purpose","printer","material","stage"].forEach(id=>$(id).addEventListener("input",updatePreview));
+    $("attachInput").onchange=e=>addAttachments(Array.from(e.target.files||[]));
+    $("searchModels").oninput=renderLibrary;$("filterStage").onchange=renderLibrary;$("exportData").onclick=exportWorkspace;$("importData").onchange=e=>{if(e.target.files&&e.target.files[0])importWorkspace(e.target.files[0]);};
+    $("aboutBtn").onclick=$("helpBtn").onclick=()=> $("aboutModal").classList.add("show");$("closeAbout").onclick=()=> $("aboutModal").classList.remove("show");$("aboutModal").onclick=e=>{if(e.target===$("aboutModal"))$("aboutModal").classList.remove("show");};
+    $("learnStart").onclick=()=>{showPage("learn");$("lessonGrid").querySelector("details").open=true;};
+    renderLessons();
+  }
+  async function start() {
+    try { db=await openDatabase(); }
+    catch (_) { fallbackMode=true; }
+    projects=await readProjects();
+    if(!projects.length){
+      const seed={id:uid(),name:"雙球端連接柱",type:"ball-connector",totalLength:26.94,ballDiameter:8.8,shaftDiameter:4.9,blendLength:4.4,purpose:"上下端部最大直徑 8.8 mm，中間柱直徑 4.9 mm，總長 26.94 mm；端面保留圓弧尖端不切平，球與柱身以平滑曲線連接。",printer:"",material:"",stage:"設計中",revision:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),attachments:[]};
+      seed.scad=makeScad(seed);await writeProject(seed);projects=await readProjects();
+    }
+    setup();renderDashboard();renderLibrary();
+    const first=projects.find(p=>p.type==="ball-connector")||projects[0];activeId=first.id;setForm(first);updateAttachments();
+    if(fallbackMode) toast("目前使用瀏覽器備援儲存；匯出 JSON 備份以保留資料。");
+  }
+  start();
+})();
+</script>
+</body>
+</html>
